@@ -1,14 +1,14 @@
 'use strict'
 const mongoose = require('mongoose');
 const express = require('express');
-const configs= require('./src/configs');
+const configs = require('./src/configs');
 const app = express();
 
 /// Load env file
 require('dotenv').config();
 
 /// Routes
-require('./src/configs/routes')(app)
+require('./src/routes/api')(app)
 
 /// Setup Server
 const port = process.env.PORT || 3000;
