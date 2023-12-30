@@ -1,12 +1,12 @@
-import { connect } from 'amqplib';
-import configs from './config.js';
+const amqp = require('amqplib');
+const configs = require('./config.js');
 
-export default class BaseRabbitMQ {
+class BaseRabbitMQ {
   channel;
   connection;
 
   async createChannel() {
-    this.connection = await connect(configs.url);
+    this.connection = await amqp.connect(configs.url);
 
     this.channel = await this.connection.createChannel();
   }
@@ -22,3 +22,5 @@ export default class BaseRabbitMQ {
     process.exit(1);
   }
 }
+
+module.exports = BaseRabbitMQ;
