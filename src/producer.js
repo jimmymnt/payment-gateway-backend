@@ -1,12 +1,12 @@
-import { connect } from 'amqplib';
-import configs from './config.js';
-import BaseRabbitMQ from './rabbitmq.js';
+const amqp = require('amqplib');
+const configs = require('./config.js');
+const BaseRabbitMQ = require('./rabbitmq.js');
 
 // Step 1: Connect to the RabbitMQ server.
 // Step 2: Create a new Channel on that connection.
 // Step 3: Create the Exchange
 // Step 4: Publish the message to the exchange with a routingKey
-export default class Producer extends BaseRabbitMQ {
+class Producer extends BaseRabbitMQ {
 
   async publishMessage(routingKey, message) {
     await this.makeSureConnected();
@@ -31,3 +31,5 @@ export default class Producer extends BaseRabbitMQ {
     setTimeout(() => this.declare(), 2000);
   }
 }
+
+module.exports = Producer;

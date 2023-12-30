@@ -1,9 +1,9 @@
-import { connect } from 'amqplib';
-import configs from '../config.js';
+const amqp = require('amqplib');
+const configs = require('../config.js');
 
 const receiver = async () => {
   // 1. Connect to RabbitMQ server
-  const conn = await connect(configs.url);
+  const conn = await amqp.connect(configs.url);
 
   // 2. Create Channel
   const channel = await conn.createChannel();
