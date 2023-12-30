@@ -1,20 +1,18 @@
 import { connect } from 'amqplib';
-import { rabbitMQConnectString } from '../utils/rabbitmq.js';
+import configs from '../config.js';
 
 const receiver = async () => {
   // 1. Connect to RabbitMQ server
-  const conn = await connect(rabbitMQConnectString);
+  const conn = await connect(configs.url);
 
   // 2. Create Channel
   const channel = await conn.createChannel();
 
   // 3. Create Exchange
-  const nameExchange = 'send_feedback';
+  const nameExchange = configs.exchangeName;
   await channel.assertExchange(nameExchange, 'topic', {
     durable: true,
   });
-
-
 
   // 4. Create Queue
   const routingKey = '';
@@ -25,6 +23,7 @@ const receiver = async () => {
 
   // 5. Binding
   const topics = process.argv.slice(2);
+  console.log(topics);
   if (!topics.length) {
     process.exit(0);
   }
