@@ -1,0 +1,21 @@
+[
+  {
+    "_id": {
+      "$oid": "659147aefcac8318cfc9e686"
+    },
+    "client_id": {
+      "$oid": "659167b4fcac8318cfc9e699"
+    },
+    "client_secret": "357631b8-087e-4ada-9415-ff270e947428",
+    "callback_url": "http://localhost:3000",
+    "grants": "authorization_code"
+  },
+  {
+    "_id": {
+      "$oid": "659167b4fcac8318cfc9e699"
+    },
+    "name": "Jimmy Nguyen",
+    "password": "TestTest",
+    "email": "jimmy@yopmail.com"
+  }
+]

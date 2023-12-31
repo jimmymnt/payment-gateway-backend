@@ -1,7 +1,9 @@
-const OAuth2Server = require('oauth2-server');
+const OAuth2Server = require('@node-oauth/oauth2-server');
 const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
 const OAuth = require("../models/oauth");
+const {OAuthClientsModel} = require("../models/oauth");
+const {UserModels} = require("../models/user");
 
 const server = new OAuth2Server({
   model: OAuth // See https://github.com/oauthjs/node-oauth2-server for specification
@@ -31,32 +33,31 @@ const authorize = async (req, res) => {
       authenticateHandler: {
         handle: async () => {
           // Present in Flow 1 and Flow 2 ('client_id' is a required for /oauth/authorize
-          const { client_id } = req.query || {};
-          if (!client_id) throw new Error("Client ID not found");
-          return {
-            _id: 12
-          }
-          // const client = await .findOne({client_id: client_id});
-          // if (!client) throw new Error("Client not found");
-          // // Only present in Flow 2 (authentication screen)
-          // const {user_id} = req.auth || {};
-          //
-          // // At this point, if there's no 'user_id' attached to the client or the request doesn't originate from an authentication screen, then do not bind this authorization code to any user, just the client
-          // if (!client.user_id && !user_id) return {}; // falsy value
-          // const user = await usersDb.findOne({
-          //   ...(client.user_id && {_id: client.user_id}), ...(user_id && {clerkId: user_id})
-          // });
-          // if (!user) throw new Error("User not found");
-          // return {_id: user._id};
+          const {client_id} = req.query || {};
+          if (!client_id) throw new Error("Client ID not found 111");
+          // console.log(client_id);
+          const client = await OAuthClientsModel.findOne({client_id: client_id});
+          if (!client) throw new Error("Client not found 222");
+          // Only present in Flow 2 (authentication screen)
+          const {user_id} = req.auth || {};
+          // At this point, if there's no 'user_id' attached to the client
+          // or the request doesn't originate from an authentication screen,
+          // then do not bind this authorization code to any user, just the client
+          if (!client.user_id && !user_id) return {}; // falsy value
+          const user = await UserModels.findById(client.user_id);
+          console.log("user:", user);
+          if (!user) throw new Error("User not found 333");
+          return {_id: user._id};
         }
-      }
+      },
+      allowEmptyState: true,
     })
     .then((result) => {
       res.json(result);
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? { error: err.message } : err);
+      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
@@ -64,13 +65,13 @@ const token = (req, res) => {
   const request = new Request(req);
   const response = new Response(res);
   return server
-    .token(request, response, { alwaysIssueNewRefreshToken: false })
+    .token(request, response, {alwaysIssueNewRefreshToken: false})
     .then((result) => {
       res.json(result);
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? { error: err.message } : err);
+      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
@@ -80,16 +81,16 @@ const authenticate = (req, res, next) => {
   return server
     .authenticate(request, response)
     .then((data) => {
-      req.auth = { user_id: data?.user?.id, sessionType: "oauth2" };
+      req.auth = {user_id: data?.user?.id, sessionType: "oauth2"};
       next();
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? { error: err.message } : err);
+      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
 const test = async (req, res) => {
 };
 
-module.exports = { server, authorize, token, authenticate, test };
+module.exports = {server, authorize, token, authenticate, test};

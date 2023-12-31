@@ -1,14 +1,14 @@
-const uuid = require('uuid');
+const uuid = require('uuid').v4;
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const OAuthClients = new Schema({
   user_id: {
-    type: String,
+    type: mongoose.ObjectId,
     require: true,
   },
   client_id: {
-    type: String,
+    type: mongoose.ObjectId,
     require: true,
   },
   client_secret: {
@@ -40,7 +40,7 @@ const OAuthAuthorizationCodes = new Schema({
     type: String
   },
   client_id: {
-    type: String
+    type: mongoose.ObjectId,
   },
   user_id: {
     type: String
@@ -58,7 +58,7 @@ const OAuthAccessTokens = new Schema({
     type: String
   },
   client_id: {
-    type: String
+    type: mongoose.ObjectId,
   },
   user_id: {
     type: String
@@ -76,17 +76,17 @@ const OAuthRefreshTokens = new Schema({
     type: String
   }, // not sure if this is needed
   client_id: {
-    type: String
+    type: mongoose.ObjectId,
   },
   user_id: {
     type: String
   },
 });
 
-const OAuthClientsModel = mongoose.model("OAuthClients", OAuthClients);
-const OAuthAuthorizationCodesModel = mongoose.model("OAuthAuthorizationCodes", OAuthAuthorizationCodes);
-const OAuthAccessTokensModel = mongoose.model("OAuthAccessTokens", OAuthAccessTokens);
-const OAuthRefreshTokensModel = mongoose.model("OAuthRefreshTokens", OAuthRefreshTokens);
+const OAuthClientsModel = mongoose.model("OAuthClients", OAuthClients, "oauth_clients");
+const OAuthAuthorizationCodesModel = mongoose.model("OAuthAuthorizationCodes", OAuthAuthorizationCodes, "oauth_authorization_codes");
+const OAuthAccessTokensModel = mongoose.model("OAuthAccessTokens", OAuthAccessTokens, "oauth_access_tokens");
+const OAuthRefreshTokensModel = mongoose.model("OAuthRefreshTokens", OAuthRefreshTokens, "oauth_refresh_tokens");
 
 /**
  * Get an OAuth2 Client.
@@ -95,67 +95,83 @@ const OAuthRefreshTokensModel = mongoose.model("OAuthRefreshTokens", OAuthRefres
  * 'clientSecret' is defined when refreshing the token.
  */
 async function getClient(client_id, client_secret) {
+  console.log('getClient:', client_id, client_secret);
   const client = await OAuthClientsModel.findOne({
-    client_id,
+    client_id: client_id,
     ...(client_secret && {client_secret})
-  }).lean();
+  });
 
   if (!client) {
-    throw new Error("Client not found");
+    throw new Error("Client not found 3");
   }
 
-  return {
-    id: client.clientId,
+  const data = {
+    id: client.client_id,
     grants: client.grants,
     redirectUris: [client.callback_url]
   };
+  console.log('getClient: return data', data);
+  return data;
 }
 
 /**
  * Save authorization code.
  */
 async function saveAuthorizationCode(code, client, user) {
+  console.log('saveAuthorizationCode');
+  console.log('code: ', code);
+  console.log('client:', client);
+  console.log('user:', user);
   const authorizationCode = {
+    authorization_code: code.authorizationCode,
+    redirect_uri: code.redirectUri,
+    scope: code.scope,
+    client_id: client.id,
+    user_id: user.id
+  };
+
+  await OAuthAuthorizationCodesModel.create({...authorizationCode});
+  return {
     authorizationCode: code.authorizationCode,
     redirectUri: code.redirectUri,
     scope: code.scope,
     clientId: client.id,
-    userId: user._id
+    userId: user.id
   };
-
-  await OAuthAuthorizationCodesModel.create({_id: uuid(), ...authorizationCode});
-  return authorizationCode;
 }
 
 /**
  * Get authorization code.
  */
-async function getAuthorizationCode(authorizationCode) {
-  const code = await OAuthAuthorizationCodesModel.findOne({authorizationCode}).lean();
+async function getAuthorizationCode(authorization_code) {
+  console.log('getAuthorizationCode: ', authorization_code);
+  const code = await OAuthAuthorizationCodesModel.findOne({authorization_code});
   if (!code) throw new Error("Authorization code not found");
 
   return {
-    code: code.authorizationCode,
-    expiresAt: code.expiresAt,
-    redirectUri: code.redirectUri,
+    code: code.authorization_code,
+    expiresAt: code.expires_at,
+    redirectUri: code.redirect_uri,
     scope: code.scope,
-    client: {id: code.clientId},
-    user: {id: code.userId}
+    client: {id: code.client_id},
+    user: {id: code.user_id}
   };
 }
 
 /**
-* Revoke authorization code.
-*/
+ * Revoke authorization code.
+ */
 async function revokeAuthorizationCode({code}) {
+  console.log('revokeAuthorizationCode:', code);
   const res = await OAuthAuthorizationCodesModel.deleteOne({authorization_code: code});
-  return res.deletedCount === 1;
+  return res.deleted_count === 1;
 }
 
 /**
  * Revoke a refresh token.
  */
 async function revokeToken({refresh_token}) {
+  console.log('revokeToken: ', refresh_token);
   const res = await OAuthAccessTokensModel.deleteOne({refresh_token});
   return res.deletedCount === 1;
 }
@@ -164,13 +180,13 @@ async function revokeToken({refresh_token}) {
  * Save token.
  */
 async function saveToken(token, client, user) {
+  console.log('saveToken:', token, client, user);
   await OAuthAccessTokensModel.create({
     access_token: token.access_token,
     access_token_expires_at: token.access_token_expires_at,
     scope: token.scope,
-    _id: uuid(),
-    clientId: client.id,
-    userId: user.id
+    client_id: client._id,
+    user_id: user.id
   });
 
   if (token.refresh_token) {
@@ -178,20 +194,19 @@ async function saveToken(token, client, user) {
       refresh_token: token.refresh_token,
       refresh_token_expires_at: token.refresh_token_expires_at,
       scope: token.scope,
-      _id: uuid(),
-      client_id: client.id,
-      user_id: user.id
+      client_id: client._id,
+      user_id: user._id
     });
   }
 
   return {
-    access_token: token.access_token,
-    access_token_expires_at: token.access_token_expires_at,
-    refresh_token: token.refresh_token,
-    refresh_tokenExpires_at: token.refresh_token_expires_at,
+    accessToken: token.access_token,
+    accessTokenExpiresAt: token.access_token_expires_at,
+    refreshToken: token.refresh_token,
+    refreshTokenExpiresAt: token.refresh_token_expires_at,
     scope: token.scope,
-    client: {id: client.id},
-    user: {id: user.id},
+    client: {id: client._id},
+    user: {id: user._id},
   };
 }
 
@@ -199,15 +214,16 @@ async function saveToken(token, client, user) {
  * Get access token.
  */
 async function getAccessToken(access_token) {
+  console.log('getAccessToken:', access_token);
   const token = await OAuthAccessTokensModel.findOne({access_token}).lean();
   if (!token) throw new Error("Access token not found");
 
   return {
-    access_token: token.access_token,
-    access_token_expires_at: token.access_token_expires_at,
+    accessToken: token.access_token,
+    accessTokenExpiresAt: token.access_token_expires_at,
     scope: token.scope,
-    client: {id: token.clientId},
-    user: {id: token.userId}
+    client: {id: token.client_id},
+    user: {id: token.user_id}
   };
 }
 
@@ -215,11 +231,12 @@ async function getAccessToken(access_token) {
  * Get refresh token.
  */
 async function getRefreshToken(refresh_token) {
+  console.log('getAuthorizationCode:', refresh_token);
   const token = await OAuthRefreshTokensModel.findOne({refresh_token}).lean();
   if (!token) throw new Error("Refresh token not found");
 
   return {
-    refresh_token: token.refresh_token,
+    refreshToken: token.refresh_token,
     // refreshTokenExpiresAt: token.refreshTokenExpiresAt, // never expires
     scope: token.scope,
     client: {id: token.client_id},
@@ -228,6 +245,7 @@ async function getRefreshToken(refresh_token) {
 }
 
 module.exports = {
+  OAuthClientsModel,
   saveToken,
   saveAuthorizationCode,
   revokeAuthorizationCode,

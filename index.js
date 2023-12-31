@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const configs = require('./src/configs');
 const app = express();
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -19,7 +20,7 @@ app.use('/oauth', oauthRoutes);
 
 /// Setup Server
 const port = process.env.PORT || 3000;
-connect();
+connect().then();
 
 function listen() {
   if (app.get('env') === 'test') return;
