@@ -1,14 +1,13 @@
-const uuid = require('uuid').v4;
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const OAuthClients = new Schema({
   user_id: {
-    type: mongoose.ObjectId,
+    type: String,
     require: true,
   },
   client_id: {
-    type: mongoose.ObjectId,
+    type: String,
     require: true,
   },
   client_secret: {
@@ -27,6 +26,10 @@ const OAuthClients = new Schema({
 });
 
 const OAuthAuthorizationCodes = new Schema({
+  id: {
+    type: String,
+    require: true,
+  },
   authorization_code: {
     type: String
   },
@@ -40,7 +43,7 @@ const OAuthAuthorizationCodes = new Schema({
     type: String
   },
   client_id: {
-    type: mongoose.ObjectId,
+    type: String,
   },
   user_id: {
     type: String
@@ -48,6 +51,10 @@ const OAuthAuthorizationCodes = new Schema({
 });
 
 const OAuthAccessTokens = new Schema({
+  id: {
+    type: String,
+    require: true,
+  },
   access_token: {
     type: String
   },
@@ -58,7 +65,7 @@ const OAuthAccessTokens = new Schema({
     type: String
   },
   client_id: {
-    type: mongoose.ObjectId,
+    type: String,
   },
   user_id: {
     type: String
@@ -66,6 +73,10 @@ const OAuthAccessTokens = new Schema({
 });
 
 const OAuthRefreshTokens = new Schema({
+  id: {
+    type: String,
+    require: true,
+  },
   refresh_token: {
     type: String
   },
@@ -76,7 +87,7 @@ const OAuthRefreshTokens = new Schema({
     type: String
   }, // not sure if this is needed
   client_id: {
-    type: mongoose.ObjectId,
+    type: String,
   },
   user_id: {
     type: String
@@ -125,6 +136,7 @@ async function saveAuthorizationCode(code, client, user) {
   const authorizationCode = {
     authorization_code: code.authorizationCode,
     redirect_uri: code.redirectUri,
+    expires_at: code.expiresAt,
     scope: code.scope,
     client_id: client.id,
     user_id: user.id
@@ -133,6 +145,7 @@ async function saveAuthorizationCode(code, client, user) {
   await OAuthAuthorizationCodesModel.create({...authorizationCode});
   return {
     authorizationCode: code.authorizationCode,
+    expiresAt: code.expiresAt,
     redirectUri: code.redirectUri,
     scope: code.scope,
     clientId: client.id,
@@ -164,7 +177,7 @@ async function getAuthorizationCode(authorization_code) {
 async function revokeAuthorizationCode({code}) {
   console.log('revokeAuthorizationCode:', code);
   const res = await OAuthAuthorizationCodesModel.deleteOne({authorization_code: code});
-  return res.deleted_count === 1;
+  return res.deletedCount === 1;
 }
 
 /**
@@ -185,7 +198,7 @@ async function saveToken(token, client, user) {
     access_token: token.access_token,
     access_token_expires_at: token.access_token_expires_at,
     scope: token.scope,
-    client_id: client._id,
+    client_id: client.id,
     user_id: user.id
   });
 
@@ -194,8 +207,8 @@ async function saveToken(token, client, user) {
       refresh_token: token.refresh_token,
       refresh_token_expires_at: token.refresh_token_expires_at,
       scope: token.scope,
-      client_id: client._id,
-      user_id: user._id
+      client_id: client.id,
+      user_id: user.id
     });
   }
 
@@ -205,8 +218,8 @@ async function saveToken(token, client, user) {
     refreshToken: token.refresh_token,
     refreshTokenExpiresAt: token.refresh_token_expires_at,
     scope: token.scope,
-    client: {id: client._id},
-    user: {id: user._id},
+    client: {id: client.id},
+    user: {id: user.id},
   };
 }
 

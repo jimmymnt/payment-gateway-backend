@@ -1,8 +1,11 @@
-const uuid = require('uuid').v4;
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const User = new Schema({
+  id: {
+    type: String,
+    require: true,
+  },
   name: {
     type: String,
     require: false,
