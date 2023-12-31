@@ -51,10 +51,6 @@ const OAuthAuthorizationCodes = new Schema({
 });
 
 const OAuthAccessTokens = new Schema({
-  id: {
-    type: String,
-    require: true,
-  },
   access_token: {
     type: String
   },
@@ -148,8 +144,8 @@ async function saveAuthorizationCode(code, client, user) {
     expiresAt: code.expiresAt,
     redirectUri: code.redirectUri,
     scope: code.scope,
-    clientId: client.id,
-    userId: user.id
+    client: {id: client.id},
+    user: {id: user.id}
   };
 }
 
@@ -160,6 +156,7 @@ async function getAuthorizationCode(authorization_code) {
   console.log('getAuthorizationCode: ', authorization_code);
   const code = await OAuthAuthorizationCodesModel.findOne({authorization_code});
   if (!code) throw new Error("Authorization code not found");
+  console.log('getAuthorizationCode code:', code);
 
   return {
     code: code.authorization_code,
@@ -195,17 +192,17 @@ async function revokeToken({refresh_token}) {
 async function saveToken(token, client, user) {
   console.log('saveToken:', token, client, user);
   await OAuthAccessTokensModel.create({
-    access_token: token.access_token,
-    access_token_expires_at: token.access_token_expires_at,
+    access_token: token.accessToken,
+    access_token_expires_at: token.accessTokenExpiresAt,
     scope: token.scope,
     client_id: client.id,
     user_id: user.id
   });
 
-  if (token.refresh_token) {
+  if (token.refreshToken) {
     await OAuthRefreshTokensModel.create({
-      refresh_token: token.refresh_token,
-      refresh_token_expires_at: token.refresh_token_expires_at,
+      refresh_token: token.refreshToken,
+      refresh_token_expires_at: token.refreshTokenExpiresAt,
       scope: token.scope,
       client_id: client.id,
       user_id: user.id
@@ -213,10 +210,10 @@ async function saveToken(token, client, user) {
   }
 
   return {
-    accessToken: token.access_token,
-    accessTokenExpiresAt: token.access_token_expires_at,
-    refreshToken: token.refresh_token,
-    refreshTokenExpiresAt: token.refresh_token_expires_at,
+    accessToken: token.accessToken,
+    accessTokenExpiresAt: token.accessTokenExpiresAt,
+    refreshToken: token.refreshToken,
+    refreshTokenExpiresAt: token.refreshTokenExpiresAt,
     scope: token.scope,
     client: {id: client.id},
     user: {id: user.id},
@@ -250,7 +247,7 @@ async function getRefreshToken(refresh_token) {
 
   return {
     refreshToken: token.refresh_token,
-    // refreshTokenExpiresAt: token.refreshTokenExpiresAt, // never expires
+    refreshTokenExpiresAt: token.refresh_token_expires_at,
     scope: token.scope,
     client: {id: token.client_id},
     user: {id: token.userId}
