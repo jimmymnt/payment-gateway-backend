@@ -1,5 +1,7 @@
 'use strict'
 
+/// Load env file
+require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -11,8 +13,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
-/// Load env file
-require('dotenv').config();
 
 /// Routes
 const oauthRoutes = require('./src/routes/oauth-flow');

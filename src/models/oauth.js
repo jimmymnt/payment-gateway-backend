@@ -226,7 +226,8 @@ async function saveToken(token, client, user) {
 async function getAccessToken(access_token) {
   console.log('getAccessToken:', access_token);
   const token = await OAuthAccessTokensModel.findOne({access_token}).lean();
-  if (!token) throw new Error("Access token not found");
+  if (!token) throw new Error("Unauthorized");
+  console.log('token from here:', token);
 
   return {
     accessToken: token.access_token,

@@ -86,11 +86,15 @@ const authenticate = (req, res, next) => {
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
+      res.status(401).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
 const test = async (req, res) => {
+  console.log(req.auth);
+  res.json({
+    "message": "Passed",
+  });
 };
 
 module.exports = {server, authorize, token, authenticate, test};
