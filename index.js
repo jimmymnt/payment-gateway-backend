@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const configs = require('./src/configs');
+const {authenticate} = require("./src/services/oauth2.service");
 const app = express();
 
 // parse application/x-www-form-urlencoded
@@ -17,6 +18,14 @@ app.use(bodyParser.json());
 /// Routes
 const oauthRoutes = require('./src/routes/oauth-flow');
 app.use('/oauth', oauthRoutes);
+app.get('/', (req, res) => {
+  res.send("Hello world");
+});
+app.get('/users', authenticate, (req, res) => {
+  res.json({
+    "data": "user data here",
+  });
+});
 
 /// Setup Server
 const port = process.env.PORT || 3000;
