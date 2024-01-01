@@ -250,7 +250,7 @@ async function getAccessToken(access_token) {
  * Get refresh token.
  */
 async function getRefreshToken(refresh_token) {
-  console.log('getAuthorizationCode:', refresh_token);
+  console.log('getRefreshToken:', refresh_token);
   const token = await OAuthRefreshTokensModel.findOne({refresh_token}).lean();
   if (!token) throw new Error("Refresh token not found");
 

@@ -91,11 +91,4 @@ const authenticate = (req, res, next) => {
     });
 };
 
-const test = async (req, res) => {
-  console.log(req.auth);
-  res.json({
-    "message": "Passed",
-  });
-};
-
-module.exports = {server, authorize, token, authenticate, test};
+module.exports = {server, authorize, token, authenticate};
