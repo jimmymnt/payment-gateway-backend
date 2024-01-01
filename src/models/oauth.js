@@ -153,7 +153,7 @@ async function saveAuthorizationCode(code, client, user) {
     redirectUri: code.redirectUri,
     scope: code.scope,
     client: {id: client.id},
-    user: {id: client.id}
+    user: {id: client.userId}
   };
 }
 
