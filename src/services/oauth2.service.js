@@ -44,10 +44,10 @@ const authorize = async (req, res) => {
           // or the request doesn't originate from an authentication screen,
           // then do not bind this authorization code to any user, just the client
           if (!client.user_id && !user_id) return {}; // falsy value
-          const user = await UserModels.findById(client.user_id);
+          const user = await UserModels.findOne({id: client.user_id});
           console.log("user:", user);
           if (!user) throw new Error("User not found 333");
-          return {_id: user._id};
+          return user;
         }
       },
       allowEmptyState: true,
@@ -81,16 +81,21 @@ const authenticate = (req, res, next) => {
   return server
     .authenticate(request, response)
     .then((data) => {
+      console.log('authenticate:', data);
       req.auth = {user_id: data?.user?.id, sessionType: "oauth2"};
       next();
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
+      res.status(err.code || 401).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
 const test = async (req, res) => {
+  console.log(req.auth);
+  res.json({
+    "message": "Passed",
+  });
 };
 
 module.exports = {server, authorize, token, authenticate, test};

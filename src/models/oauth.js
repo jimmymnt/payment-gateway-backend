@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
+const {InvalidTokenError} = require("@node-oauth/oauth2-server");
 const {Schema} = mongoose;
 
 const OAuthClients = new Schema({
-  user_id: {
+  client_id: {
     type: String,
     require: true,
   },
-  client_id: {
+  user_id: {
     type: String,
     require: true,
   },
@@ -31,22 +32,28 @@ const OAuthAuthorizationCodes = new Schema({
     require: true,
   },
   authorization_code: {
-    type: String
+    type: String,
+    require: true,
   },
   expires_at: {
-    type: Date
+    type: Date,
+    require: true,
   },
   redirect_uri: {
-    type: String
+    type: String,
+    require: true,
   },
   scope: {
-    type: String
+    type: String,
+    require: true,
   },
   client_id: {
     type: String,
+    require: true,
   },
   user_id: {
-    type: String
+    type: String,
+    require: true,
   },
 });
 
@@ -115,7 +122,8 @@ async function getClient(client_id, client_secret) {
   const data = {
     id: client.client_id,
     grants: client.grants,
-    redirectUris: [client.callback_url]
+    redirectUris: [client.callback_url],
+    userId: client.user_id,
   };
   console.log('getClient: return data', data);
   return data;
@@ -135,7 +143,7 @@ async function saveAuthorizationCode(code, client, user) {
     expires_at: code.expiresAt,
     scope: code.scope,
     client_id: client.id,
-    user_id: user.id
+    user_id: client.userId
   };
 
   await OAuthAuthorizationCodesModel.create({...authorizationCode});
@@ -145,7 +153,7 @@ async function saveAuthorizationCode(code, client, user) {
     redirectUri: code.redirectUri,
     scope: code.scope,
     client: {id: client.id},
-    user: {id: user.id}
+    user: {id: client.id}
   };
 }
 
@@ -196,7 +204,7 @@ async function saveToken(token, client, user) {
     access_token_expires_at: token.accessTokenExpiresAt,
     scope: token.scope,
     client_id: client.id,
-    user_id: user.id
+    user_id: client.userId
   });
 
   if (token.refreshToken) {
@@ -205,7 +213,7 @@ async function saveToken(token, client, user) {
       refresh_token_expires_at: token.refreshTokenExpiresAt,
       scope: token.scope,
       client_id: client.id,
-      user_id: user.id
+      user_id: client.userId
     });
   }
 
@@ -216,7 +224,7 @@ async function saveToken(token, client, user) {
     refreshTokenExpiresAt: token.refreshTokenExpiresAt,
     scope: token.scope,
     client: {id: client.id},
-    user: {id: user.id},
+    user: {id: client.userId},
   };
 }
 
@@ -226,7 +234,8 @@ async function saveToken(token, client, user) {
 async function getAccessToken(access_token) {
   console.log('getAccessToken:', access_token);
   const token = await OAuthAccessTokensModel.findOne({access_token}).lean();
-  if (!token) throw new Error("Access token not found");
+  if (!token) throw new InvalidTokenError("Unauthorized");
+  console.log('token from here:', token);
 
   return {
     accessToken: token.access_token,
