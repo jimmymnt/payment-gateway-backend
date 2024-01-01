@@ -3,8 +3,8 @@
     "_id": {
       "$oid": "659147aefcac8318cfc9e686"
     },
-    "id": "659147",
-    "client_id": "559219",
+    "client_id": "55219",
+    "user_id": "659147",
     "client_secret": "357631b8-087e-4ada-9415-ff270e947428",
     "callback_url": "http://localhost:3000",
     "grants": "authorization_code"
