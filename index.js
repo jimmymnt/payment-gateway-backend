@@ -21,7 +21,7 @@ app.use('/oauth', oauthRoutes);
 app.get('/', (req, res) => {
   res.send("Hello world");
 });
-app.get('/users', authenticate, (req, res) => {
+app.post('/users', authenticate, (req, res) => {
   res.json({
     "data": "user data here",
   });
