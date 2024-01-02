@@ -190,7 +190,7 @@ async function revokeAuthorizationCode({code}) {
  */
 async function revokeToken({refresh_token}) {
   console.log('revokeToken: ', refresh_token);
-  const res = await OAuthAccessTokensModel.deleteOne({refresh_token});
+  const res = await OAuthRefreshTokensModel.deleteOne({refresh_token});
   return res.deletedCount === 1;
 }
 

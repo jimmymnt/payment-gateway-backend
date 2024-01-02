@@ -6,15 +6,15 @@ const {Schema} = mongoose;
 const User = new Schema({
   id: {
     type: String,
-    require: true,
+    required: true,
   },
   name: {
     type: String,
-    require: false,
+    required: [true, "Name field is required."],
   },
   password: {
     type: String,
-    require: true,
+    required: [true, "Password field is required."],
     select: false,
   },
   email: {
@@ -23,7 +23,7 @@ const User = new Schema({
       validator: validateEmail,
       message: props => `${props.value} has already been taken!`
     },
-    required: [true, 'User email required'],
+    required: [true, 'User email field is required'],
   },
 });
 
@@ -38,12 +38,18 @@ const createUser = async (information) => {
 
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-  return await UserModels.create({
+  const user = await UserModels.create({
     id: uuid(),
     name,
     email,
     password: hash
   });
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }
 };
 
 async function validateEmail(email) {
