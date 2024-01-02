@@ -7,24 +7,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const configs = require('./src/configs');
 const {authenticate} = require("./src/services/oauth2.service");
+const oauthRoutes = require('./src/routes/oauth-flow');
+const apiRoutes = require('./src/routes/api');
+const {createUser} = require("./src/models/user");
 const app = express();
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
 app.use(bodyParser.json());
 
 /// Routes
-const oauthRoutes = require('./src/routes/oauth-flow');
 app.use('/oauth', oauthRoutes);
+app.use('/api/v1', apiRoutes);
 app.get('/', (req, res) => {
   res.send("Hello world");
-});
-app.post('/users', authenticate, (req, res) => {
-  res.json({
-    "data": "user data here",
-  });
 });
 
 /// Setup Server
