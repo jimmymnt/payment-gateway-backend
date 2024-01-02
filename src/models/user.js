@@ -22,6 +22,11 @@ const User = new Schema({
 
 const UserModels = mongoose.model("User", User, "users");
 
+const createUser = (req, res) => {
+  console.log(req.body);
+}
+
 module.exports = {
   UserModels,
+  createUser,
 }
