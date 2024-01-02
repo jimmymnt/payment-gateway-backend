@@ -4,7 +4,7 @@ const {createUser} = require("../models/user");
 const router = express.Router();
 
 router.post('/login', (req, res) => {
-  console.log(req.body);
+  console.table(req.body);
 
   res.json({
     "message": "Logged in",
@@ -20,9 +20,9 @@ router.post('/users', (req, res) => {
       });
     })
     .catch(err => {
-      res.json({
+      res.status(422).json({
         "error": err.message,
-      }, 422);
+      });
     });
 });
 
