@@ -4,10 +4,15 @@ const {createUser} = require("../models/user");
 const router = express.Router();
 
 router.post('/login', (req, res) => {
-  console.table(req.body);
 
   res.json({
     "message": "Logged in",
+  });
+});
+
+router.get('/protected-test', authenticate, (req, res) => {
+  res.json({
+    "message": "Data here",
   });
 });
 

@@ -32,6 +32,7 @@ const authorize = async (req, res) => {
     .authorize(request, response, {
       authenticateHandler: {
         handle: async () => {
+          console.log('32132132');
           // Present in Flow 1 and Flow 2 ('client_id' is a required for /oauth/authorize
           const {client_id} = req.query || {};
           if (!client_id) throw new Error("Client ID not found 111");
