@@ -188,9 +188,9 @@ async function revokeAuthorizationCode({code}) {
 /**
  * Revoke a refresh token.
  */
-async function revokeToken({refresh_token}) {
-  console.log('revokeToken: ', refresh_token);
-  const res = await OAuthRefreshTokensModel.deleteOne({refresh_token});
+async function revokeToken(token) {
+  console.log('revokeToken:', token);
+  const res = await OAuthRefreshTokensModel.deleteOne({refresh_token: token.refreshToken});
   return res.deletedCount === 1;
 }
 
