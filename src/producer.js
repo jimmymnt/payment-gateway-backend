@@ -1,5 +1,5 @@
 const amqp = require('amqplib');
-const configs = require('./config.js');
+const {url, exchangeName} = require("./config.js");
 const BaseRabbitMQ = require('./rabbitmq.js');
 
 // Step 1: Connect to the RabbitMQ server.
@@ -11,7 +11,6 @@ class Producer extends BaseRabbitMQ {
   async publishMessage(routingKey, message) {
     await this.makeSureConnected();
 
-    const exchangeName = configs.exchangeName;
     await this.channel.assertExchange(exchangeName, 'topic', {
       durable: true,
     });
