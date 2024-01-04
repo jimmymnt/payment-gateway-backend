@@ -64,11 +64,13 @@ router.get('/authorize', authorize);
  *                  description: Client Redirect URL (Callback URL)
  *     responses:
  *       200:
- *          description: Successfully
+ *         description: Successfully
+ *       404:
+ *         description: Client not found in the system
  *       400:
- *          description: Bad Request, missing params
+ *         description: Bad Request, missing body content
  *       50x:
- *          description: Error: Service Unavailable
+ *         description: Error Service Unavailable
  */
 router.post('/token', token);
 
