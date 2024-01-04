@@ -10,12 +10,12 @@ const router = express.Router();
  *     - OAuth Flows
  *     description: Authorize client
  *     parameters:
- *        - name: Client ID
- *          in: path
+ *        - name: client_id
+ *          in: query
  *          description: ID of the client
  *          required: true
- *        - name: Response Type
- *          in: path
+ *        - name: response_type
+ *          in: query
  *          description: Response type of authorization, types are supported [code]
  *          required: true
  *     responses:
@@ -28,6 +28,48 @@ const router = express.Router();
  */
 router.get('/authorize', authorize);
 
+/**
+ * @openapi
+ * /oauth/token:
+ *  post:
+ *     tags:
+ *     - OAuth Flows
+ *     description: Get Token and related information.
+ *     requestBody:
+ *        content:
+ *         application/x-www-form-urlencoded:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - client_id
+ *                - client_secret
+ *                - grant_type
+ *                - code
+ *                - redirect_uri
+ *              properties:
+ *                client_id:
+ *                  type: string
+ *                  description: Client ID
+ *                client_secret:
+ *                  type: string
+ *                  description: Client secret
+ *                grant_type:
+ *                  type: string
+ *                  description: Grant Type
+ *                code:
+ *                  type: string
+ *                  description: Authorization Code
+ *                redirect_uri:
+ *                  type: string
+ *                  description: Client Redirect URL (Callback URL)
+ *     responses:
+ *       200:
+ *          description: Successfully
+ *       400:
+ *          description: Bad Request, missing params
+ *       50x:
+ *          description: Error: Service Unavailable
+ */
 router.post('/token', token);
 
 /**

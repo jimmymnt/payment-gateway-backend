@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const {InvalidTokenError} = require("@node-oauth/oauth2-server");
-const OAuthClientNotFoundError = require("../error-handler/OauthClientNotFound");
+const OAuthClientNotFoundError = require("../error-handler/OAuthClientNotFoundError");
 const {Schema} = mongoose;
 
 const OAuthClients = new Schema({
@@ -117,7 +117,7 @@ async function getClient(client_id, client_secret) {
   });
 
   if (!client) {
-    throw new OAuthClientNotFoundError('Client not found.');
+    throw new OAuthClientNotFoundError('Client not foundssssssss');
   }
 
   const data = {
@@ -164,7 +164,7 @@ async function saveAuthorizationCode(code, client, user) {
 async function getAuthorizationCode(authorization_code) {
   console.log('getAuthorizationCode: ', authorization_code);
   const code = await OAuthAuthorizationCodesModel.findOne({authorization_code});
-  if (!code) throw new Error("Authorization code not found");
+  if (!code) throw new OAuthClientNotFoundError("Authorization code not found");
   console.log('getAuthorizationCode code:', code);
 
   return {

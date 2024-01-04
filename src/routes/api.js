@@ -29,7 +29,10 @@ router.get('/ping', (req, res) => {
  *     tags:
  *     - Login
  *     description: Login to the system
- *     parameters:
+ *     requestBody:
+ *        - content:
+ *            application
+ *
  *        - name: Email
  *          in: path
  *          description: Email
@@ -42,13 +45,13 @@ router.get('/ping', (req, res) => {
  */
 router.post('/login', (req, res) => {
   res.json({
-    "message": "Logged in",
+    message: "Logged in",
   });
 });
 
 router.get('/protected-test', authenticate, (req, res) => {
   res.json({
-    "message": "Data here",
+    message: "Data here",
   });
 });
 

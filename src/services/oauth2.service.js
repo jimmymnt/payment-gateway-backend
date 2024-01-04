@@ -4,6 +4,8 @@ const Response = OAuth2Server.Response;
 const OAuth = require("../models/oauth");
 const {OAuthClientsModel} = require("../models/oauth");
 const {UserModels} = require("../models/user");
+const OAuthClientNotFoundError = require("../error-handler/OAuthClientNotFoundError");
+const UserNotFoundError = require("../error-handler/UserNotFoundError");
 
 const server = new OAuth2Server({
   model: OAuth // See https://github.com/oauthjs/node-oauth2-server for specification
@@ -38,7 +40,7 @@ const authorize = async (req, res) => {
           if (!client_id) throw new Error("Client ID not found 111");
           // console.log(client_id);
           const client = await OAuthClientsModel.findOne({client_id: client_id});
-          if (!client) throw new Error("Client not found 222");
+          if (!client) throw new OAuthClientNotFoundError("Client not found 222");
           // Only present in Flow 2 (authentication screen)
           const {user_id} = req.auth || {};
           // At this point, if there's no 'user_id' attached to the client
@@ -47,7 +49,7 @@ const authorize = async (req, res) => {
           if (!client.user_id && !user_id) return {}; // falsy value
           const user = await UserModels.findOne({id: client.user_id});
           console.log("user:", user);
-          if (!user) throw new Error("User not found 333");
+          if (!user) throw new UserNotFoundError("User not found 333");
           return user;
         }
       },
