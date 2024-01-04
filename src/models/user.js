@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const {validateEmail} = require("../services/user.service");
 const uuid = require('uuid').v4;
 const {Schema} = mongoose;
 
@@ -18,6 +17,15 @@ const User = new Schema({
     required: [true, "Password field is required."],
     select: false,
   },
+  phone: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^(0\d{9,10})$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+  },
   email: {
     type: String,
     validate: {
@@ -34,7 +42,8 @@ const createUser = async (information) => {
   const {
     name,
     email,
-    password
+    password,
+    phone,
   } = information;
 
   const salt = bcrypt.genSaltSync(10);
@@ -43,15 +52,27 @@ const createUser = async (information) => {
     id: uuid(),
     name,
     email,
+    phone,
     password: hash
   });
 
   return {
     id: user.id,
     name: user.name,
+    phone: user.phone,
     email: user.email,
   }
 };
+
+async function validateEmail(email) {
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!regex.test(email)) {
+    throw new Error("Email is not valid email.");
+  }
+
+  const existed = await this.constructor.findOne({email})
+  if (!!existed) throw new Error("A user is already registered with this email address.")
+}
 
 module.exports = {
   UserModels,
