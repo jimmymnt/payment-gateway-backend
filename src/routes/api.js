@@ -55,6 +55,45 @@ router.get('/protected-test', authenticate, (req, res) => {
   });
 });
 
+/**
+ * @openapi
+ * /api/v1/users:
+ *  post:
+ *     tags:
+ *     - Create User
+ *     description: Create user to log into the system.
+ *     requestBody:
+ *        content:
+ *         application/x-www-form-urlencoded:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - name
+ *                - email
+ *                - password
+ *              properties:
+ *                name:
+ *                  type: string
+ *                  description: User's name
+ *                email:
+ *                  type: string
+ *                  pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+ *                  description: User's Email
+ *                password:
+ *                  type: string
+ *                  description: User's Password
+ *                phone:
+ *                  type: string
+ *                  pattern: '^(0\d{9,10})$'
+ *                  description: User's phone
+ *     responses:
+ *       201:
+ *         description: User created
+ *       400:
+ *         description: Bad request, missing body content
+ *       50x:
+ *         description: Error service unavailable
+ */
 router.post('/users', (req, res) => {
   createUser(req.body)
     .then(response => {
