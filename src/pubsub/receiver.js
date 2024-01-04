@@ -1,15 +1,15 @@
 const amqp = require('amqplib');
-const configs = require('../config.js');
+const {url, exchangeName} = require("../config.js");
 
 const receiver = async () => {
   // 1. Connect to RabbitMQ server
-  const conn = await amqp.connect(configs.url);
+  const conn = await amqp.connect(url);
 
   // 2. Create Channel
   const channel = await conn.createChannel();
 
   // 3. Create Exchange
-  const nameExchange = configs.exchangeName;
+  const nameExchange = exchangeName;
   await channel.assertExchange(nameExchange, 'topic', {
     durable: true,
   });
@@ -28,9 +28,9 @@ const receiver = async () => {
     process.exit(0);
   }
   console.log(`[x] waiting from queue:::${queue} :::topic:::${topics}`);
-  topics.forEach(async topic => {
+  for (const topic of topics) {
     await channel.bindQueue(queue, nameExchange, topic);
-  });
+  }
 
   await channel.consume(queue, msg => {
     if (msg != null) {
@@ -43,4 +43,4 @@ const receiver = async () => {
   });
 }
 
-receiver();
+receiver().then();

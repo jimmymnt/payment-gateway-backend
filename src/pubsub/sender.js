@@ -1,9 +1,9 @@
 const amqp = require('amqplib');
-const configs = require('../config.js');
+const {url, exchangeName} = require("../config.js");
 
 const sender = async () => {
   // 1. Connect to RabbitMQ server
-  const conn = await amqp.connect(configs.url);
+  const conn = await amqp.connect(url);
 
   // 2. Create Channel
   const channel = await conn.createChannel();
@@ -11,7 +11,7 @@ const sender = async () => {
   // 3. Create Exchange with exchange-type is TOPIC
   // In this case we're going to use `durable` as `true` which means the data will be stored on Disk
   // Not in-memory
-  const exchange = configs.exchangeName;
+  const exchange = exchangeName;
   await channel.assertExchange(exchange, 'topic', {
     durable: true,
   });
