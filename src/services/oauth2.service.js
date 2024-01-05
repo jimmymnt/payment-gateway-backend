@@ -84,7 +84,6 @@ const authenticate = (req, res, next) => {
   return server
     .authenticate(request, response)
     .then((data) => {
-      console.log('authenticate:', data);
       req.auth = {user_id: data?.user?.id, sessionType: "oauth2"};
       next();
     })
