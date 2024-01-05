@@ -1,0 +1,10 @@
+/api/v1/ping:
+  get:
+    tags:
+      - Ping
+    description: Returns API operational status
+    responses:
+      200:
+        description: API is  running
+      400:
+        description: Bad request
