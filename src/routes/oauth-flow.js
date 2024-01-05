@@ -75,9 +75,66 @@ router.get('/authorize', authorize);
 router.post('/token', token);
 
 /**
- * API to authenticate
- * @method authenticate
- * @header {string} token - Bearer token
+ * @openapi
+ * /oauth/token/refresh:
+ *  post:
+ *     tags:
+ *     - OAuth Flows
+ *     description: Refresh Token.
+ *     components:
+ *        securitySchemes:
+ *            BasicAuth:
+ *                type: http
+ *                scheme: basic
+ *     requestBody:
+ *        content:
+ *         application/x-www-form-urlencoded:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - grant_type
+ *                - refresh_token
+ *              properties:
+ *                grant_type:
+ *                  type: string
+ *                  description: Grant Type [refresh_token]
+ *                refresh_token:
+ *                  type: string
+ *                  description: Refresh Token value
+ *     responses:
+ *       200:
+ *         description: Successfully
+ *       404:
+ *         description: Client not found in the system
+ *       400:
+ *         description: Bad Request, missing Basic Auth or body content
+ *       50x:
+ *         description: Error Service Unavailable
+ */
+router.post('/token/refresh', token);
+
+/**
+ * @openapi
+ * /api/v1/protected-test:
+ *  get:
+ *     tags:
+ *     - Retrieve data after authentication
+ *     components:
+ *        securitySchemes:
+ *          bearerAuth:
+ *            type: http
+ *            scheme: bearer
+ *     security:
+ *         - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Authorized
+ *       404:
+ *         description: Client not found in the system
+ *       400:
+ *         description: Bad Request, missing params
+ *       50x:
+ *         description: Error Service Unavailable
  */
 router.get('/authenticate', authenticate);
 
