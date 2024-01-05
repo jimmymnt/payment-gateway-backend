@@ -16,10 +16,9 @@ components:
     basicAuth:
       type: http
       scheme: basic
-    bearerAuth: # arbitrary name for the security scheme
+    bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
 paths:
   /api/v1/ping:
     get:
