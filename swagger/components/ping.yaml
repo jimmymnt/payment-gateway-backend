@@ -1,0 +1,8 @@
+/api/v1/ping:
+  get:
+    tags:
+      - Ping
+    description: Returns API operational status
+    responses:
+      '200':
+        description: OK

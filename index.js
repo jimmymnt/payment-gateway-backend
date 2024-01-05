@@ -8,8 +8,7 @@ const bodyParser = require('body-parser');
 const configs = require('./src/configs');
 const oauthRoutes = require('./src/routes/oauth-flow');
 const apiRoutes = require('./src/routes/api');
-const swaggerJsDoc = require('swagger-jsdoc');
-// const YAML = require('yamljs');
+const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 
@@ -18,7 +17,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
 app.use(bodyParser.json());
-
 
 /// Routes
 app.use('/oauth', oauthRoutes);
@@ -42,23 +40,5 @@ function connect() {
   return mongoose.connect(configs.db);
 }
 
-/// Swagger documentation configs
-// const swaggerDocument = YAML.load('swagger.txt');
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      description: "Oauth 2.0 Authorization Server",
-      version: "1.0.0",
-      title: "Authorization Server",
-    },
-    servers: [
-      {
-        url: process.env.SITE_URL
-      }
-    ]
-  },
-  apis: ['./src/routes/*.js'],
-};
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+const swaggerOptions = YAML.load('swagger/swagger.yaml')
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerOptions));

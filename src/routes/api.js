@@ -3,22 +3,9 @@ const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
 const router = express.Router();
 
-/**
- * @openapi
- * /api/v1/ping:
- *  get:
- *     tags:
- *     - Ping
- *     description: Returns API operational status
- *     responses:
- *       200:
- *         description: API is  running
- *       400:
- *         description: Bad request
- */
 router.get('/ping', (req, res) => {
   res.status(200).json({
-    data: "PONG"
+    data: "PONGssss"
   });
 });
 
