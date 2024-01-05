@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/ping', (req, res) => {
   res.status(200).json({
-    data: "PONGssss"
+    data: "PONG"
   });
 });
 
