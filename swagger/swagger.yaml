@@ -11,6 +11,9 @@ info:
     url: "https://www.apache.org/licenses/LICENSE-2.0.html"
 servers:
   - url: "http://localhost:3000"
+    description: Local Environment
+  - url: "https://oauth.gotcloud.app"
+    description: Local Environment
 components:
   securitySchemes:
     basicAuth:
