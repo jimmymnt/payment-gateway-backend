@@ -1,8 +1,8 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
-const {findUserByEmail, validatePassword, generateAccessToken} = require("../services/user.service");
+const {findUserByEmail, validatePassword} = require("../services/user.service");
+const {generateAccessToken} = require("../services/token-handler.service");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
