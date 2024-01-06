@@ -1,5 +1,6 @@
 const {UserModels} = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const findUserByEmail = async (email) => {
   const user = await UserModels.findOne({email});
@@ -18,7 +19,16 @@ const validatePassword = (password, user) => {
   });
 }
 
+const generateAccessToken = (information) => {
+  const token = jwt.sign(information, process.env.JWT_SECRET_KEY, {
+    expiresIn: '1h'
+  });
+
+  return token;
+}
+
 module.exports = {
   findUserByEmail,
   validatePassword,
+  generateAccessToken,
 }
