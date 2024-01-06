@@ -1,6 +1,7 @@
 const express = require('express');
 const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
+const {findUserByEmail, validatePassword} = require("../services/user.service");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -30,10 +31,22 @@ router.get('/ping', (req, res) => {
  *       400:
  *         description: Bad request
  */
-router.post('/login', (req, res) => {
-  res.json({
-    message: "Logged in",
-  });
+router.post('/login', async (req, res) => {
+  console.log(req.body);
+  try {
+    const {email, password} = req.body;
+    /// Find user by email
+    const user = await findUserByEmail(email);
+    /// Validate the password from request with user's password
+    validatePassword(password, user);
+    /// Sign and return back the access token
+
+    res.json({
+      message: "Logged in",
+    });
+  } catch (error) {
+    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+  }
 });
 
 router.get('/protected-test', authenticate, (req, res) => {
@@ -42,45 +55,6 @@ router.get('/protected-test', authenticate, (req, res) => {
   });
 });
 
-/**
- * @openapi
- * /api/v1/users:
- *  post:
- *     tags:
- *     - Create User
- *     description: Create user to log into the system.
- *     requestBody:
- *        content:
- *         application/x-www-form-urlencoded:
- *            schema:
- *              type: object
- *              required:
- *                - name
- *                - email
- *                - password
- *              properties:
- *                name:
- *                  type: string
- *                  description: User's name
- *                email:
- *                  type: string
- *                  pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
- *                  description: User's Email
- *                password:
- *                  type: string
- *                  description: User's Password
- *                phone:
- *                  type: string
- *                  pattern: '^(0\d{9,10})$'
- *                  description: User's phone
- *     responses:
- *       201:
- *         description: User created
- *       400:
- *         description: Bad request, missing body content
- *       50x:
- *         description: Error service unavailable
- */
 router.post('/users', (req, res) => {
   createUser(req.body)
     .then(response => {

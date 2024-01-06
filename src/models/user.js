@@ -15,7 +15,6 @@ const User = new Schema({
   password: {
     type: String,
     required: [true, "Password field is required."],
-    select: false,
   },
   phone: {
     type: String,
