@@ -2,6 +2,7 @@ const express = require('express');
 const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
+const {generateAccessToken} = require("../services/token-handler.service");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -40,9 +41,14 @@ router.post('/login', async (req, res) => {
     /// Validate the password from request with user's password
     validatePassword(password, user);
     /// Sign and return back the access token
+    const accessToken = generateAccessToken({
+      user_id: user.id,
+      email: user.email,
+      name: user.name,
+    });
 
     res.json({
-      message: "Logged in",
+      accessToken
     });
   } catch (error) {
     res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
