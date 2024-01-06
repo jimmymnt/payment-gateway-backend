@@ -1,8 +1,7 @@
 const express = require('express');
-const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {VALIDATION_ERROR, CREATED, OK} = require("../utils/HTTPStatusCode");
+const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/HTTPStatusCode");
 const auth = require("../middleware/auth");
 const router = express.Router();
 
@@ -37,7 +36,7 @@ router.get('/protected-test', auth, (req, res) => {
   });
 });
 
-router.post('/users', (req, res) => {
+router.post('/users', auth, (req, res) => {
   createUser(req.body)
     .then(response => {
       res.status(CREATED).json({
@@ -46,7 +45,7 @@ router.post('/users', (req, res) => {
       });
     })
     .catch(err => {
-      res.status(VALIDATION_ERROR).json({
+      res.status(UNPROCESSABLE_ENTITY).json({
         "error": err.message,
       });
     });
