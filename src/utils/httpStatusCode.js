@@ -1,10 +1,11 @@
-const httpStatusCodes = {
+const STATUS_CODE = {
   OK: 200,
   CREATED: 201,
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
   VALIDATION_ERROR: 422,
   INTERNAL_SERVER: 500,
+  UNPROCESSABLE_ENTITY: 422,
 }
 
-module.exports = httpStatusCodes
+module.exports = STATUS_CODE

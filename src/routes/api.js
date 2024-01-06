@@ -3,6 +3,7 @@ const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
 const {generateAccessToken} = require("../services/token-handler.service");
+const {VALIDATION_ERROR} = require("../utils/httpStatusCode");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -11,27 +12,6 @@ router.get('/ping', (req, res) => {
   });
 });
 
-/**
- * @openapi
- * /api/v1/login:
- *  post:
- *     tags:
- *     - Login
- *     description: Login to the system
- *     requestBody:
- *        - content:
- *            application
- *
- *        - name: Email
- *          in: path
- *          description: Email
- *          required: true
- *     responses:
- *       200:
- *         description: Logged in successfully
- *       400:
- *         description: Bad request
- */
 router.post('/login', async (req, res) => {
   console.log(req.body);
   try {
@@ -39,7 +19,7 @@ router.post('/login', async (req, res) => {
     /// Find user by email
     const user = await findUserByEmail(email);
     /// Validate the password from request with user's password
-    validatePassword(password, user);
+    await validatePassword(password, user);
     /// Sign and return back the access token
     const accessToken = generateAccessToken({
       user_id: user.id,
@@ -70,7 +50,7 @@ router.post('/users', (req, res) => {
       });
     })
     .catch(err => {
-      res.status(422).json({
+      res.status(VALIDATION_ERROR).json({
         "error": err.message,
       });
     });
