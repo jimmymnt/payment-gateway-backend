@@ -1,5 +1,5 @@
 const BaseError = require("./BaseError");
-const {UNPROCESSABLE_ENTITY} = require("../utils/httpStatusCode");
+const {UNPROCESSABLE_ENTITY} = require("../utils/HTTPStatusCode");
 
 class UnprocessableEntityError extends BaseError {
   constructor(
