@@ -67,6 +67,33 @@ paths:
           description: Bad request, missing body content
         '503':
           description: Error service unavailable
+  /api/v1/login:
+    post:
+      tags:
+        - Login
+      description: Login to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  description: User's email
+                password:
+                  type: string
+                  description: User's Password
+      responses:
+        200:
+          description: Logged in successfully
+        400:
+          description: Bad request
+        500:
+          description: Email or Password incorrect
   /oauth/authorize:
     get:
       tags:
