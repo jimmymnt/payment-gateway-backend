@@ -4,27 +4,35 @@ const OAuthClientNotFoundError = require("../error-handler/OAuthClientNotFoundEr
 const {Schema} = mongoose;
 
 const OAuthClients = new Schema({
+  name: {
+    type: String,
+    required: [true, "Name field is required."],
+  },
+  description: {
+    type: String,
+    required: false,
+  },
   client_id: {
     type: String,
-    require: true,
+    required: [true, "Client ID field is required."],
   },
   user_id: {
     type: String,
-    require: true,
+    required: [true, "User ID field is required."],
   },
   client_secret: {
     type: String,
-    require: true,
+    required: [true, "Client Secret field is required."],
   },
   callback_url: {
     type: String,
-    require: true,
+    required: [true, "Callback URL field is required."],
   },
   grants: {
     type: [String],
-    required: true,
-    enum: ["authorization_code", "refresh_token"]
-  }
+    enum: ["authorization_code", "refresh_token"],
+    required: [true, "Grants field is required."],
+  },
 });
 
 const OAuthAuthorizationCodes = new Schema({

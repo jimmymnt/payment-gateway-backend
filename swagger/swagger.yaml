@@ -10,10 +10,10 @@ info:
     name: "Apache 2.0"
     url: "https://www.apache.org/licenses/LICENSE-2.0.html"
 servers:
-  - url: "https://oauth.gotcloud.app"
-    description: PROD Environment
   - url: "http://localhost:3000"
     description: Local Environment
+  - url: "https://oauth.gotcloud.app"
+    description: PROD Environment
 components:
   securitySchemes:
     basicAuth:
