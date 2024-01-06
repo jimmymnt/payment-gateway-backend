@@ -1,5 +1,5 @@
 const BaseError = require("../BaseError");
-const {VALIDATE_ERROR} = require('../../utils/httpStatusCode');
+const {VALIDATE_ERROR} = require('../../utils/HTTPStatusCode');
 
 class OAuthClientNotValidationError extends BaseError {
   constructor(

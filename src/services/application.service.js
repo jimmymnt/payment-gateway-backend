@@ -1,4 +1,4 @@
-const {OK} = require("../utils/httpStatusCode");
+const {OK} = require("../utils/HTTPStatusCode");
 const crypto = require('crypto');
 const {OAuthClientsModel} = require("../models/oauth");
 const createOAuthApplication = async (req, res) => {
@@ -10,7 +10,7 @@ const createOAuthApplication = async (req, res) => {
     } = req.body;
     let secretKey = crypto.randomBytes(28).toString('hex');
     let clientId = crypto.randomBytes(12).toString('hex');
-    let userId = '659147';
+    let userId = req.user.id;
     const application = new OAuthClientsModel({
       name,
       description,

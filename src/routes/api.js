@@ -2,8 +2,8 @@ const express = require('express');
 const {authenticate} = require("../services/oauth2.service");
 const {createUser} = require("../models/user");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {generateAccessToken} = require("../services/token-handler.service");
-const {VALIDATION_ERROR} = require("../utils/httpStatusCode");
+const {VALIDATION_ERROR, CREATED, OK} = require("../utils/HTTPStatusCode");
+const auth = require("../middleware/auth");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -21,13 +21,9 @@ router.post('/login', async (req, res) => {
     /// Validate the password from request with user's password
     await validatePassword(password, user);
     /// Sign and return back the access token
-    const accessToken = generateAccessToken({
-      user_id: user.id,
-      email: user.email,
-      name: user.name,
-    });
+    const accessToken = user.generateAccessToken();
 
-    res.json({
+    res.status(OK).json({
       accessToken
     });
   } catch (error) {
@@ -35,7 +31,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/protected-test', authenticate, (req, res) => {
+router.get('/protected-test', auth, (req, res) => {
   res.json({
     message: "Data here",
   });
@@ -44,7 +40,7 @@ router.get('/protected-test', authenticate, (req, res) => {
 router.post('/users', (req, res) => {
   createUser(req.body)
     .then(response => {
-      res.send({
+      res.status(CREATED).json({
         success: true,
         data: response
       });

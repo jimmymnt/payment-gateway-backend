@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid').v4;
+const jwt = require("jsonwebtoken");
 const {Schema} = mongoose;
 
 const User = new Schema({
@@ -34,6 +35,18 @@ const User = new Schema({
     required: [true, 'User email field is required'],
   },
 });
+
+User.methods.generateAccessToken = function () {
+  const token = jwt.sign({
+    id: this.id,
+    email: this.email,
+    name: this.name,
+  }, process.env.JWT_SECRET_KEY, {
+    expiresIn: '1h'
+  });
+
+  return token;
+}
 
 const UserModels = mongoose.model("User", User, "users");
 
