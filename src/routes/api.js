@@ -12,7 +12,6 @@ router.get('/ping', (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  console.log(req.body);
   try {
     const {email, password} = req.body;
     /// Find user by email
@@ -20,10 +19,10 @@ router.post('/login', async (req, res) => {
     /// Validate the password from request with user's password
     await validatePassword(password, user);
     /// Sign and return back the access token
-    const accessToken = user.generateAccessToken();
-
+    const {accessToken, refreshToken} = await user.generateAccessToken();
     res.status(OK).json({
-      accessToken
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
