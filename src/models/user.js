@@ -39,9 +39,7 @@ const User = new Schema({
 
 User.methods.generateAccessToken = async function () {
   const accessToken = jwt.sign({
-    id: this.id,
-    email: this.email,
-    name: this.name,
+    user_id: this.id,
   }, process.env.JWT_SECRET_KEY, {
     expiresIn: '1h'
   });

@@ -10,9 +10,7 @@ const auth = (req, res, next) => {
       });
     }
 
-    console.log(token);
     req.user = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    console.log(req.user);
     next();
   } catch (error) {
     res.status(UNAUTHORIZED).json({
