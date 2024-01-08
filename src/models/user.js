@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid').v4;
 const jwt = require("jsonwebtoken");
+const {generateRefreshToken} = require("./UserRefreshToken");
 const {Schema} = mongoose;
 
 const User = new Schema({
@@ -20,7 +21,7 @@ const User = new Schema({
   phone: {
     type: String,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return /^(0\d{9,10})$/.test(v);
       },
       message: props => `${props.value} is not a valid phone number!`
@@ -36,8 +37,8 @@ const User = new Schema({
   },
 });
 
-User.methods.generateAccessToken = function () {
-  const token = jwt.sign({
+User.methods.generateAccessToken = async function () {
+  const accessToken = jwt.sign({
     id: this.id,
     email: this.email,
     name: this.name,
@@ -45,7 +46,13 @@ User.methods.generateAccessToken = function () {
     expiresIn: '1h'
   });
 
-  return token;
+  const token = await generateRefreshToken(this);
+  const {token: refreshToken} = token;
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 }
 
 const UserModels = mongoose.model("User", User, "users");

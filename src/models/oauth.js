@@ -125,7 +125,7 @@ async function getClient(client_id, client_secret) {
   });
 
   if (!client) {
-    throw new OAuthClientNotFoundError('Client not foundssssssss');
+    throw new OAuthClientNotFoundError('Client not found');
   }
 
   const data = {
