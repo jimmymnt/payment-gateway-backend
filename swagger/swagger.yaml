@@ -34,7 +34,7 @@ paths:
   /api/v1/users:
     post:
       tags:
-        - Create User
+        - User Authenticate
       description: Create user to log into the system.
       requestBody:
         content:
@@ -70,7 +70,7 @@ paths:
   /api/v1/login:
     post:
       tags:
-        - Login
+        - User Authenticate
       description: Login to the system
       requestBody:
         content:
@@ -94,6 +94,31 @@ paths:
           description: Bad request
         500:
           description: Email or Password incorrect
+  /api/v1/token/refresh:
+    post:
+      tags:
+        - User Authenticate
+      description: Refresh user token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refresh_token
+              properties:
+                refresh_token:
+                  type: string
+                  description: User's refresh token
+      responses:
+        200:
+          description: Refresh Token successfully
+        403:
+          description: Forbidden
+        400:
+          description: Bad request
+        500:
+          description: Server Internal Error
   /oauth/authorize:
     get:
       tags:

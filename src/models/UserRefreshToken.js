@@ -36,7 +36,7 @@ const UserRefreshTokenModel = mongoose.model("UserRefreshToken", UserRefreshToke
 
 const generateRefreshToken = async (user) => {
   const data = {
-    user_id: user._id,
+    user_id: user.id,
   }
 
   /// Sign the refresh token
@@ -66,5 +66,6 @@ const generateRefreshToken = async (user) => {
 };
 
 module.exports = {
+  UserRefreshTokenModel,
   generateRefreshToken,
 }

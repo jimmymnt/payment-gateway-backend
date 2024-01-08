@@ -1,7 +1,7 @@
 const {OK} = require("../utils/HTTPStatusCode");
 const crypto = require('crypto');
 const {OAuthClientsModel} = require("../models/oauth");
-const createOAuthApplication = async (req, res) => {
+const oauthApplication = async (req, res) => {
   try {
     const {
       name,
@@ -34,5 +34,5 @@ const createOAuthApplication = async (req, res) => {
 }
 
 module.exports = {
-  createOAuthApplication
+  oauthApplication
 }
