@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const {InvalidTokenError} = require("@node-oauth/oauth2-server");
-const OAuthClientNotFoundError = require("../error-handler/OAuthClientNotFoundError");
+const OAuthClientNotFoundError = require("../exceptions/OAuthClientNotFoundError");
 const {Schema} = mongoose;
 
 const OAuthClients = new Schema({
