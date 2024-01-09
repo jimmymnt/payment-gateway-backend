@@ -2,3 +2,5 @@
 .env
 /build
 test.yml
+/exception.log
+/rejections.log

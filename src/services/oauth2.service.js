@@ -4,8 +4,8 @@ const Response = OAuth2Server.Response;
 const OAuth = require("../models/oauth");
 const {OAuthClientsModel} = require("../models/oauth");
 const {UserModels} = require("../models/user");
-const OAuthClientNotFoundError = require("../error-handler/OAuthClientNotFoundError");
-const UserNotFoundError = require("../error-handler/UserNotFoundError");
+const OAuthClientNotFoundError = require("../exceptions/OAuthClientNotFoundError");
+const UserNotFoundError = require("../exceptions/UserNotFoundError");
 
 const server = new OAuth2Server({
   model: OAuth // See https://github.com/oauthjs/node-oauth2-server for specification

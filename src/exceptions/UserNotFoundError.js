@@ -8,7 +8,7 @@ class UserNotFoundError extends BaseError {
     code = NOT_FOUND,
   ) {
     // logger.error(`${__filename}: code: ${code} - ${message}`);
-    // logger.error(new Error("fdsafdsa"));
+    logger.error(new Error("fdsafdsa"));
     super(message, code)
   }
 }
