@@ -1,7 +1,7 @@
 const express = require('express');
 const {createUser} = require("../models/user");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/HTTPStatusCode");
+const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/status_code.util");
 const auth = require("../middleware/auth");
 const {refreshToken} = require("../services/user.authenticate.service");
 const router = express.Router();

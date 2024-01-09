@@ -1,4 +1,4 @@
-const {OK} = require("../utils/HTTPStatusCode");
+const {OK} = require("../utils/status_code.util");
 const crypto = require('crypto');
 const {OAuthClientsModel} = require("../models/oauth");
 const oauthApplication = async (req, res) => {

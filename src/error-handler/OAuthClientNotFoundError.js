@@ -1,4 +1,4 @@
-const {NOT_FOUND} = require("../utils/HTTPStatusCode");
+const {NOT_FOUND} = require("../utils/status_code.util");
 const BaseError = require("./BaseError");
 
 class OAuthClientNotFoundError extends BaseError {
