@@ -21,15 +21,9 @@ const UserRefreshToken = new Schema({
   },
   created_at: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
+    expires: 30 * 24 * 60 * 60 // 30 days
   },
-  expire_at: {
-    type: Date,
-    required: [
-      true,
-      "The expire_at field is required."
-    ]
-  }
 });
 
 const UserRefreshTokenModel = mongoose.model("UserRefreshToken", UserRefreshToken, "user_refresh_tokens");
@@ -54,12 +48,9 @@ const generateRefreshToken = async (user) => {
   });
 
   /// Create the new one.
-  const expire_at = new Date();
-  expire_at.setDate(expire_at.getDate() + 30);
   const refreshToken = await UserRefreshTokenModel.create({
     user_id: user._id,
     token,
-    expire_at,
   });
 
   return refreshToken;

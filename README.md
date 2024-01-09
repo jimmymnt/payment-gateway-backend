@@ -1,13 +1,12 @@
 # amqp-node
 
 ### Oauth 2.0 flow
-![Alt text](flow-oauth2.png)
+![Alt text](oauth2-flow.png)
 
 ## Oauth 2.0 Authorization Server
 
 ### TODO
-- [ ] Implement Logger #log @jimmy
-- [ ] Refresh User Token @jimmy
+- [ ] Implement Logger #log #winston @jimmy
 - [ ] Install ELK server #log @jimmy
 - [ ] CRUD: User @jimmy
 - [ ] CRUD: Client @jimmy
@@ -19,6 +18,12 @@
 - [ ] Rate limit for api call @jimmy
 
 ### Completed features ✓
+- [x] Authorize of OAuth
+  - response_type
+  - client_id
+- [x] Get token and refresh token from OAuth
 - [x] Refresh Token of OAuth
 - [x] Register User
+- [x] Login User into system
+- [x] Refresh User Token @jimmy
 - [x] Create OAuth Application
