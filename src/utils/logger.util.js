@@ -2,8 +2,7 @@ const {format, createLogger, transports} = require("winston");
 const {formatDate} = require("./date.util");
 const {combine, timestamp, printf, errors, json, prettyPrint} = format;
 
-
-const logger = createLogger({
+const iLogger = createLogger({
   level: process.env.LOG_LEVEL || "debug",
   format: combine(
     errors({
@@ -31,4 +30,6 @@ const logger = createLogger({
   ],
 });
 
-module.exports = logger;
+module.exports = {
+  iLogger
+};

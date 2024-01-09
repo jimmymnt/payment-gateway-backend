@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid').v4;
 const jwt = require("jsonwebtoken");
-const {generateRefreshToken} = require("./UserRefreshToken");
+const {generateRefreshToken} = require("./user_refresh_token.model");
 const {Schema} = mongoose;
 
 const User = new Schema({

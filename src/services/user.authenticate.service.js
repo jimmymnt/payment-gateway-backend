@@ -1,7 +1,7 @@
 const {RefreshTokenError} = require("../exceptions/RefreshTokenError");
-const {UserRefreshTokenModel} = require("../models/UserRefreshToken");
+const {UserRefreshTokenModel} = require("../models/user_refresh_token.model");
 const jwt = require("jsonwebtoken");
-const {UserModels} = require("../models/user");
+const {UserModels} = require("../models/user.model");
 const UserNotFoundError = require("../exceptions/UserNotFoundError");
 
 const refreshToken = async (refreshToken) => {
