@@ -1,4 +1,4 @@
-const {UserModels} = require("../models/user");
+const {UserModels} = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const winstonElasticsearch = require('winston-elasticsearch');
 const UnprocessableEntityError = require("../exceptions/UnprocessableEntityError");

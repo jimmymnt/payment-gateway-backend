@@ -1,5 +1,5 @@
 const express = require('express');
-const {createUser} = require("../models/user");
+const {createUser} = require("../models/user.model");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
 const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/status_code.util");
 const auth = require("../middleware/auth");

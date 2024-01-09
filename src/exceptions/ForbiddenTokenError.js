@@ -1,11 +1,13 @@
-const {NOT_FOUND} = require("../utils/status_code.util");
+const {FORBIDDEN} = require("../utils/status_code.util");
 const BaseError = require("./BaseError");
+const {iLogger} = require("../utils/logger.util");
 
 class UserNotFoundError extends BaseError {
   constructor(
     message,
-    code = NOT_FOUND,
+    code = FORBIDDEN,
   ) {
+    iLogger.error(message);
     super(message, code)
   }
 }

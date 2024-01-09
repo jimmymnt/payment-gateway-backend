@@ -1,9 +1,9 @@
 const OAuth2Server = require('@node-oauth/oauth2-server');
 const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
-const OAuth = require("../models/oauth");
-const {OAuthClientsModel} = require("../models/oauth");
-const {UserModels} = require("../models/user");
+const OAuth = require("../models/oauth.model");
+const {OAuthClientsModel} = require("../models/oauth.model");
+const {UserModels} = require("../models/user.model");
 const OAuthClientNotFoundError = require("../exceptions/OAuthClientNotFoundError");
 const UserNotFoundError = require("../exceptions/UserNotFoundError");
 
