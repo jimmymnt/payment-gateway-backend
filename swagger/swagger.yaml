@@ -119,6 +119,18 @@ paths:
           description: Bad request
         500:
           description: Server Internal Error
+  /api/v1/logout:
+    post:
+      tags:
+        - User Authenticate
+      description: Logout
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Logged out successfully
+        '403':
+          description: Access denied. Seem like you haven't provided Authorization token, yet.
   /oauth/authorize:
     get:
       tags:
