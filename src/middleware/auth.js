@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
     /// Get token from Authorization Header
     token = token.split(' ');
     if (token.length !== 2) {
-      iLogger.error(`A user tried to authenticate but token not valid, token: ${token}`)
+      iLogger.error('A user tried to authenticate but token not valid.');
       return res.status(FORBIDDEN).json({
         error: "Token is invalid.",
       });
@@ -23,12 +23,12 @@ const auth = (req, res, next) => {
     const accessToken = token[1];
 
     /// Check that token is in Blacklist?
-    const existedBlacklist = UserTokenBlackListModel.findOne({token: accessToken});
+    const existedBlacklist = UserTokenBlackListModel.exists({token: accessToken});
     if (!!existedBlacklist) {
-      iLogger.error(`This token has been rejected by the system, token: ${token}`)
+      iLogger.error('This token has been rejected by the system');
       return res.status(FORBIDDEN).json({
         error: "This token has been rejected by the system.",
-      })
+      });
     }
 
     /// Token is valid or not?

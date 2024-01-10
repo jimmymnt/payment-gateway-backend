@@ -10,4 +10,6 @@ class OauthAuthorizationCodeNotFoundError extends BaseError {
   }
 }
 
-module.exports = OauthAuthorizationCodeNotFoundError;
+module.exports = {
+  OauthAuthorizationCodeNotFoundError
+};

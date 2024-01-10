@@ -1,8 +1,8 @@
 const {UserModels} = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const winstonElasticsearch = require('winston-elasticsearch');
-const UnprocessableEntityError = require("../exceptions/UnprocessableEntityError");
-const UserNotFoundError = require("../exceptions/UserNotFoundError");
+const {UnprocessableEntityError} = require("../exceptions/UnprocessableEntityError");
+const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
 
 const findUserByEmail = async (email) => {
   const user = await UserModels.findOne({email});

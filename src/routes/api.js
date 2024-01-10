@@ -1,9 +1,11 @@
 const express = require('express');
 const {createUser} = require("../models/user.model");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/status_code.util");
+const {CREATED, OK, UNPROCESSABLE_ENTITY, FORBIDDEN} = require("../utils/status_code.util");
 const auth = require("../middleware/auth");
 const {refreshToken} = require("../services/user.authenticate.service");
+const {blacklistOldToken} = require("../models/access_token_blacklist.model");
+const {logout} = require("../controllers/user.controller");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -33,12 +35,28 @@ router.post('/login', async (req, res) => {
 router.post('/token/refresh', async (req, res) => {
   try {
     const {refresh_token} = req.body;
-    const token = await refreshToken(refresh_token);
+    console.log(refresh_token);
+    // const token = await refreshToken(refresh_token);
+
+    await blacklistOldToken(refresh_token);
+    res.send(OK);
 
     res.status(OK).json({
       message: "New access token has been generated.",
       accessToken: token.accessToken,
       refreshToken: token.refreshToken,
+    });
+  } catch (error) {
+    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+  }
+});
+
+router.post('/logout', auth, async (req, res) => {
+  try {
+    await logout(req);
+
+    res.status(OK).json({
+      message: "Logged out",
     });
   } catch (error) {
     res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);

@@ -10,4 +10,6 @@ class OAuthClientNotFoundError extends BaseError {
   }
 }
 
-module.exports = OAuthClientNotFoundError
+module.exports = {
+  OAuthClientNotFoundError,
+}
