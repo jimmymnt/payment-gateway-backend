@@ -2,6 +2,10 @@ const {iLogger} = require("../utils/logger.util");
 const jwt = require("jsonwebtoken");
 const {TokenInvalidError} = require("../exceptions/TokenInvalidError");
 const {createBlacklistToken} = require("../models/access_token_blacklist.model");
+
+/// Logout the user from the system
+/// - Add the token into `blacklist` collection
+/// -
 const logout = async (req) => {
   /// Get token from Authorization Header
   let token = req.header('Authorization');
