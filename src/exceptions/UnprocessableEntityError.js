@@ -10,4 +10,6 @@ class UnprocessableEntityError extends BaseError {
   }
 }
 
-module.exports = UnprocessableEntityError
+module.exports = {
+  UnprocessableEntityError,
+}

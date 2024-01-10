@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
-const {MongooseError} = require("mongoose");
+const jwt = require('jsonwebtoken');
+const {UserModels} = require("./user.model");
 const {Schema} = mongoose;
 
 const UserTokenBlacklist = new Schema({
   user_id: {
-    type: mongoose.ObjectId,
+    type: String,
     required: [
       true,
       "User ID field is required.",
@@ -49,13 +50,19 @@ const createBlacklistToken = async (information) => {
       created_at: tokenRecord.created_at,
     }
   } catch (error) {
-    throw new MongooseError(
-      `Can not create token blacklist with information ${information}`
+    throw new Error(
+      `Can not create token blacklist with reason: ${error.message}`
     );
   }
 };
 
+const blacklistOldToken = async (refreshToken) => {
+  const res = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_PRIVATE_KEY);
+  console.log(res);
+}
+
 module.exports = {
   UserTokenBlackListModel,
   createBlacklistToken,
+  blacklistOldToken,
 }

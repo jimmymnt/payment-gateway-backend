@@ -10,4 +10,6 @@ class UserNotFoundError extends BaseError {
   }
 }
 
-module.exports = UserNotFoundError
+module.exports = {
+  UserNotFoundError,
+}
