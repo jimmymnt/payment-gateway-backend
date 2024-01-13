@@ -1,4 +1,4 @@
-const {OK} = require("../utils/status_code.util");
+const {OK, NOT_FOUND} = require("../utils/status_code.util");
 const crypto = require('crypto');
 const {OAuthClientsModel} = require("../models/oauth.model");
 
@@ -86,8 +86,30 @@ const updateApplication = async (req, res) => {
   }
 }
 
+const removeApplication = async (req, res) => {
+  try {
+    const {id} = req.params;
+    // TODO: soft delete
+    const app = await OAuthClientsModel.findByIdAndDelete(id);
+    if (!app) {
+      return res.status(NOT_FOUND)
+        .json({
+          error: "The application not found.",
+        });
+    }
+
+    res.status(OK)
+      .json({
+        data: app,
+      });
+  } catch (error) {
+    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+  }
+}
+
 module.exports = {
   getApplications,
   createApplication,
   updateApplication,
+  removeApplication,
 }

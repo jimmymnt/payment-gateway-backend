@@ -6,7 +6,12 @@ const {auth} = require("../middleware/auth");
 const {refreshToken} = require("../services/user.authenticate.service");
 const {blacklistOldToken} = require("../models/access_token_blacklist.model");
 const {logout} = require("../controllers/user.controller");
-const {getApplications, createApplication, updateApplication} = require("../controllers/application.controller");
+const {
+  getApplications,
+  createApplication,
+  updateApplication,
+  removeApplication
+} = require("../controllers/application.controller");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -69,6 +74,7 @@ router.put('/users/password/update', auth, (req, res) => {
 router.get('/apps', auth, getApplications);
 router.post('/apps', auth, createApplication);
 router.put('/apps/:id', auth, updateApplication);
+router.delete('/apps/:id', auth, removeApplication);
 
 router.post('/logout', auth, async (req, res) => {
   try {
