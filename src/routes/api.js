@@ -68,7 +68,7 @@ router.put('/users/password/update', auth, (req, res) => {
 /// Application routes
 router.get('/apps', auth, getApplications);
 router.post('/apps', auth, createApplication);
-router.post('/apps/:id', auth, updateApplication);
+router.put('/apps/:id', auth, updateApplication);
 
 router.post('/logout', auth, async (req, res) => {
   try {

@@ -61,7 +61,6 @@ const createApplication = async (req, res) => {
 }
 
 const updateApplication = async (req, res) => {
-  console.log(req);
   try {
     const {
       name,
@@ -69,11 +68,21 @@ const updateApplication = async (req, res) => {
       callback_url
     } = req.body;
     const {id} = req.params;
-    console.log(id);
+    const result = await OAuthClientsModel.findByIdAndUpdate(id, {
+      name,
+      description,
+      callback_url,
+      updated_at: Date.now(),
+    }, {
+      new: true
+    });
 
-    console.log(req.body);
+    res.status(OK)
+      .json({
+        data: result,
+      });
   } catch (error) {
-
+    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 

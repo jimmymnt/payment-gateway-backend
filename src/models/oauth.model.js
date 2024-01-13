@@ -33,6 +33,14 @@ const OAuthClients = new Schema({
     enum: ["authorization_code", "refresh_token"],
     required: [true, "Grants field is required."],
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const OAuthAuthorizationCodes = new Schema({
