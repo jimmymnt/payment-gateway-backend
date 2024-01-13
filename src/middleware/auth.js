@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
-const {FORBIDDEN, UNAUTHORIZED} = require("../utils/status_code.util");
-const {UserTokenBlackListModel} = require("../models/access_token_blacklist.model");
-const {iLogger} = require("../utils/logger.util");
+const { FORBIDDEN, UNAUTHORIZED } = require("../utils/status_code.util");
+const { UserTokenBlackListModel } = require("../models/access_token_blacklist.model");
+const { iLogger } = require("../utils/logger.util");
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
   try {
     let token = req.header('Authorization');
     if (!token) {
@@ -23,7 +23,7 @@ const auth = (req, res, next) => {
     const accessToken = token[1];
 
     /// Check that token is in Blacklist?
-    const existedBlacklist = UserTokenBlackListModel.exists({token: accessToken});
+    const existedBlacklist = await UserTokenBlackListModel.exists({ token: accessToken });
     if (!!existedBlacklist) {
       iLogger.error('This token has been rejected by the system');
       return res.status(FORBIDDEN).json({
@@ -41,4 +41,6 @@ const auth = (req, res, next) => {
   }
 };
 
-module.exports = auth;
+module.exports = {
+  auth,
+}

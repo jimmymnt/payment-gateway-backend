@@ -1,11 +1,12 @@
 const express = require('express');
 const {createUser} = require("../models/user.model");
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {CREATED, OK, UNPROCESSABLE_ENTITY, FORBIDDEN} = require("../utils/status_code.util");
-const auth = require("../middleware/auth");
+const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/status_code.util");
+const {auth} = require("../middleware/auth");
 const {refreshToken} = require("../services/user.authenticate.service");
 const {blacklistOldToken} = require("../models/access_token_blacklist.model");
 const {logout} = require("../controllers/user.controller");
+const {getApplications, createApplication, updateApplication} = require("../controllers/application.controller");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -35,11 +36,10 @@ router.post('/login', async (req, res) => {
 router.post('/token/refresh', async (req, res) => {
   try {
     const {refresh_token} = req.body;
-    console.log(refresh_token);
-    // const token = await refreshToken(refresh_token);
+    const token = await refreshToken(refresh_token);
 
-    await blacklistOldToken(refresh_token);
-    res.send(OK);
+    // await blacklistOldToken(refresh_token);
+    // res.send(OK);
 
     res.status(OK).json({
       message: "New access token has been generated.",
@@ -50,6 +50,25 @@ router.post('/token/refresh', async (req, res) => {
     res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
   }
 });
+
+router.put('/users/password/update', auth, (req, res) => {
+  try {
+    const {
+      current_password,
+      new_password,
+      confirmation_password
+    } = req.body;
+
+    console.log(current_password, new_password, confirmation_password);
+  } catch (error) {
+    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+  }
+});
+
+/// Application routes
+router.get('/apps', auth, getApplications);
+router.post('/apps', auth, createApplication);
+router.post('/apps/:id', auth, updateApplication);
 
 router.post('/logout', auth, async (req, res) => {
   try {
@@ -84,4 +103,4 @@ router.post('/users', auth, (req, res) => {
     });
 });
 
-module.exports = router;
+module.exports = router
