@@ -1,8 +1,6 @@
 const express = require('express');
-const {createUser} = require("../models/user.model");
-const {CREATED, OK, UNPROCESSABLE_ENTITY} = require("../utils/status_code.util");
-const {auth} = require("../middleware/auth");
-const {blacklistOldToken} = require("../models/access_token_blacklist.model");
+const {OK} = require("../utils/status_code.util");
+const {auth} = require("../middleware/auth.middleware");
 const {
   getApplications,
   createApplication,
@@ -10,6 +8,7 @@ const {
   removeApplication
 } = require("../controllers/application.controller");
 const {login, refreshToken, updatePassword, logout} = require("../controllers/authenticate.controller");
+const {createInternalUser, updateInternalUser} = require("../controllers/user.controller");
 const router = express.Router();
 
 router.get('/ping', (req, res) => {
@@ -30,25 +29,15 @@ router.post('/apps', auth, createApplication);
 router.put('/apps/:id', auth, updateApplication);
 router.delete('/apps/:id', auth, removeApplication);
 
+/// Internal User routes
+router.post('/users', auth, createInternalUser);
+router.put('/users/:id', auth, updateInternalUser);
+
 router.get('/protected-test', auth, (req, res) => {
   res.json({
     message: "Data here",
   });
 });
 
-router.post('/users', auth, (req, res) => {
-  createUser(req.body)
-    .then(response => {
-      res.status(CREATED).json({
-        success: true,
-        data: response
-      });
-    })
-    .catch(err => {
-      res.status(UNPROCESSABLE_ENTITY).json({
-        "error": err.message,
-      });
-    });
-});
 
 module.exports = router

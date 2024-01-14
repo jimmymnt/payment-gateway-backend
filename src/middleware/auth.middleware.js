@@ -3,7 +3,10 @@ const { FORBIDDEN, UNAUTHORIZED } = require("../utils/status_code.util");
 const { UserTokenBlackListModel } = require("../models/access_token_blacklist.model");
 const { iLogger } = require("../utils/logger.util");
 
-const auth = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
+  iLogger.info(
+    `Request to ${req.originalUrl} with method: ${req.method} and IP: ${req.ip}`
+  );
   try {
     let token = req.header('Authorization');
     if (!token) {
@@ -23,6 +26,7 @@ const auth = async (req, res, next) => {
     const accessToken = token[1];
 
     /// Check that token is in Blacklist?
+    /// TODO Make a request to check Blacklist Token from Redis instead of MongoDB
     const existedBlacklist = await UserTokenBlackListModel.exists({ token: accessToken });
     if (!!existedBlacklist) {
       iLogger.error('This token has been rejected by the system');
@@ -42,5 +46,5 @@ const auth = async (req, res, next) => {
 };
 
 module.exports = {
-  auth,
+  auth: authMiddleware,
 }
