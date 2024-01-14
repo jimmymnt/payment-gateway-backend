@@ -1,8 +1,8 @@
 const {UserModel} = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const winstonElasticsearch = require('winston-elasticsearch');
 const {UnprocessableEntityError} = require("../exceptions/UnprocessableEntityError");
 const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
+const {v4: uuid} = require("uuid");
 
 const findUserByEmail = async (email) => {
   const user = await UserModel.findOne({email});
@@ -20,7 +20,34 @@ const validatePassword = async (password, user) => {
   }
 }
 
+const createUser = async (information) => {
+  const {
+    name,
+    email,
+    password,
+    phone,
+  } = information;
+
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  const user = await UserModel.create({
+    id: uuid(),
+    name,
+    email,
+    phone,
+    password: hash
+  });
+
+  return {
+    id: user.id,
+    name: user.name,
+    phone: user.phone,
+    email: user.email,
+  }
+};
+
 module.exports = {
+  createUser,
   findUserByEmail,
   validatePassword,
 }

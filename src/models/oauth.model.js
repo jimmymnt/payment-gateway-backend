@@ -17,7 +17,7 @@ const OAuthClients = new Schema({
     required: [true, "Client ID field is required."],
   },
   user_id: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'UserModel',
     required: [true, "User ID field is required."],
   },

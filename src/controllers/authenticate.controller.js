@@ -1,7 +1,6 @@
 const {findUserByEmail, validatePassword} = require("../services/user.service");
 const {OK} = require("../utils/status_code.util");
-const {createBlacklistToken} = require("../models/access_token_blacklist.model");
-const {logoutHandler} = require("../services/user.authenticate.service");
+const {logoutHandler, refreshTokenHandler} = require("../services/user.authenticate.service");
 
 const login = async (req, res) => {
   try {
@@ -24,7 +23,7 @@ const login = async (req, res) => {
 const refreshToken = async (req, res) => {
   try {
     const {refresh_token} = req.body;
-    const token = await refreshToken(refresh_token);
+    const token = await refreshTokenHandler(refresh_token);
 
     // await blacklistOldToken(refresh_token);
     // res.send(OK);

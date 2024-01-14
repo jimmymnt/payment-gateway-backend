@@ -7,7 +7,7 @@ const {TokenInvalidError} = require("../exceptions/TokenInvalidError");
 const {iLogger} = require("../utils/logger.util");
 const {createBlacklistToken} = require("../models/access_token_blacklist.model");
 
-const refreshToken = async (refreshToken) => {
+const refreshTokenHandler = async (refreshToken) => {
   if (!refreshToken) {
     throw new RefreshTokenError("Missing parameter: `refresh_token`");
   }
@@ -62,5 +62,5 @@ const logoutHandler = async (req) => {
 
 module.exports = {
   logoutHandler,
-  refreshToken,
+  refreshTokenHandler,
 }

@@ -8,14 +8,18 @@ const getApplications = async (req, res) => {
     const {page = 1, limit = 10} = req.query;
 
     // execute query with page and limit values
-    const applications = await OAuthClientsModel.find()
+    const applications = await OAuthClientsModel.find({
+      user_id: req.user.user_id,
+    })
       .select('-client_secret -__v')
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
 
     // get total documents in the collection
-    const total = await OAuthClientsModel.countDocuments();
+    const total = await OAuthClientsModel.countDocuments({
+      user_id: req.user.user_id,
+    });
 
     res.status(OK)
       .json({

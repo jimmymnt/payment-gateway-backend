@@ -11,7 +11,6 @@
   - [User tokens](#user-token-management).
     - User token is the Tokens which is used for the user of this project.
 
-
 ### OAuth2.0 Token Management
 
 ### User Token management

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const uuid = require('uuid').v4;
 const jwt = require("jsonwebtoken");
 const {generateRefreshToken} = require("./user_refresh_token.model");
+const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
+const {INTERNAL_SERVER} = require("../utils/status_code.util");
 const {Schema} = mongoose;
 
 const User = new Schema({
@@ -55,31 +55,21 @@ User.methods.generateAccessToken = async function () {
 
 const UserModel = mongoose.model("User", User, "users");
 
-const createUser = async (information) => {
-  const {
-    name,
-    email,
-    password,
-    phone,
-  } = information;
+const findUserById = async (id) => {
+  try {
+    const user = await UserModel.findOne({
+      _id: id,
+    }).select('-password -__v').exec();
 
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-  const user = await UserModel.create({
-    id: uuid(),
-    name,
-    email,
-    phone,
-    password: hash
-  });
+    if (!user) {
+      return new UserNotFoundError(`Can not find user with ID is ${id}`);
+    }
 
-  return {
-    id: user.id,
-    name: user.name,
-    phone: user.phone,
-    email: user.email,
+    return user;
+  } catch (error) {
+    return new UserNotFoundError(`Error: ${error.message}`, INTERNAL_SERVER);
   }
-};
+}
 
 async function validateEmail(email) {
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -93,5 +83,5 @@ async function validateEmail(email) {
 
 module.exports = {
   UserModel,
-  createUser,
+  findUserById,
 }
