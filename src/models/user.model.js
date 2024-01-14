@@ -53,7 +53,7 @@ User.methods.generateAccessToken = async function () {
   };
 }
 
-const UserModels = mongoose.model("User", User, "users");
+const UserModel = mongoose.model("User", User, "users");
 
 const createUser = async (information) => {
   const {
@@ -65,7 +65,7 @@ const createUser = async (information) => {
 
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-  const user = await UserModels.create({
+  const user = await UserModel.create({
     id: uuid(),
     name,
     email,
@@ -92,6 +92,6 @@ async function validateEmail(email) {
 }
 
 module.exports = {
-  UserModels,
+  UserModel,
   createUser,
 }

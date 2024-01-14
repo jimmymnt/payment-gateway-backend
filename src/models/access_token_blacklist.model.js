@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const {UserModels} = require("./user.model");
+const {UserModel} = require("./user.model");
 const {Schema} = mongoose;
 
 const UserTokenBlacklist = new Schema({

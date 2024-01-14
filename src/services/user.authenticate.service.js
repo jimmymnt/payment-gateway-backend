@@ -1,8 +1,11 @@
 const {RefreshTokenError} = require("../exceptions/RefreshTokenError");
 const {UserRefreshTokenModel} = require("../models/user_refresh_token.model");
 const jwt = require("jsonwebtoken");
-const {UserModels} = require("../models/user.model");
+const {UserModel} = require("../models/user.model");
 const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
+const {TokenInvalidError} = require("../exceptions/TokenInvalidError");
+const {iLogger} = require("../utils/logger.util");
+const {createBlacklistToken} = require("../models/access_token_blacklist.model");
 
 const refreshToken = async (refreshToken) => {
   if (!refreshToken) {
@@ -16,7 +19,7 @@ const refreshToken = async (refreshToken) => {
   }
 
   const tokenDetails = jwt.verify(refreshToken, privateRefreshKey);
-  const user = await UserModels.findOne({id: tokenDetails.user_id});
+  const user = await UserModel.findOne({id: tokenDetails.user_id});
 
   if (!user) {
     throw new UserNotFoundError("User not found.");
@@ -30,6 +33,34 @@ const refreshToken = async (refreshToken) => {
   };
 }
 
+/// Logout the user from the system
+/// - Add the token into `blacklist` collection
+const logoutHandler = async (req) => {
+  /// Get token from Authorization Header
+  let token = req.header('Authorization');
+  token = token.split(' ');
+  if (token.length !== 2) {
+    iLogger.error(`A user tried to authenticate but token not valid`);
+    throw new TokenInvalidError('Token is invalid');
+  }
+  const accessToken = token[1];
+
+  /// Check if this token is valid or not
+  const tokenDetails = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+
+  /// Add this token into our blacklist to prevent further more use
+  if (tokenDetails) {
+    await createBlacklistToken({
+      user_id: tokenDetails.user_id,
+      token: accessToken,
+      reason: "logged out",
+    });
+  }
+
+  return true;
+}
+
 module.exports = {
+  logoutHandler,
   refreshToken,
 }
