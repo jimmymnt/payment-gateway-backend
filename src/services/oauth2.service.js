@@ -3,7 +3,7 @@ const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
 const OAuth = require("../models/oauth.model");
 const {OAuthClientsModel} = require("../models/oauth.model");
-const {UserModels} = require("../models/user.model");
+const {UserModel} = require("../models/user.model");
 const {OAuthClientNotFoundError} = require("../exceptions/OAuthClientNotFoundError");
 const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
 
@@ -46,7 +46,7 @@ const authorize = async (req, res) => {
           // or the request doesn't originate from an authentication screen,
           // then do not bind this authorization code to any user, just the client
           if (!client.user_id && !user_id) return {}; // falsy value
-          const user = await UserModels.findOne({id: client.user_id});
+          const user = await UserModel.findOne({id: client.user_id});
           console.log("user:", user);
           if (!user) throw new UserNotFoundError("User not found 333");
           return user;
