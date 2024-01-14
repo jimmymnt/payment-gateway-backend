@@ -34,8 +34,6 @@
 - [ ] Authenticate: Reset password @jimmy
 - [ ] Revoke user AT after the token has been refreshed @jimmy
 - [ ] Authorization Flow @jimmy
-- [ ] Update / Edit OAuth application @jimmy
-- [ ] Remove OAuth application @jimmy
 - [ ] Rate limit for api call @jimmy
 
 ### Completed features ✓
@@ -49,3 +47,5 @@
 - [x] Implement blacklist tokens @jimmy
 - [x] Refresh User Token @jimmy
 - [x] Create OAuth Application @jimmy
+- [x] Update / Edit OAuth application @jimmy
+- [x] Remove OAuth application @jimmy

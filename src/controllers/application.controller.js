@@ -9,6 +9,7 @@ const getApplications = async (req, res) => {
 
     // execute query with page and limit values
     const applications = await OAuthClientsModel.find()
+      .select('-client_secret -__v')
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
