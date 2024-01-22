@@ -1,5 +1,5 @@
 const {OK, INTERNAL_SERVER} = require("../utils/status_code.util");
-const {createPaymentIntentHandler} = require("../services/payment.service");
+const {createPaymentIntentHandler, refundHandler} = require("../services/payment.service");
 const {iLogger} = require("../utils/logger.util");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -49,7 +49,24 @@ const webhooksHandler = async (req, res) => {
   });
 }
 
+// $21,861.35
+const createRefund = async (req, res) => {
+  try {
+    const result = await refundHandler(req);
+    if (!!result) {
+      return res.status(OK)
+        .json({
+          message: "Refunded",
+          data: result,
+        });
+    }
+  } catch (error) {
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
+  }
+}
+
 module.exports = {
   createPaymentIntent,
   webhooksHandler,
+  createRefund,
 }

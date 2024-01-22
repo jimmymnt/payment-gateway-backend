@@ -1,4 +1,6 @@
 const {iLogger} = require("../utils/logger.util");
+const {MissingParameterPayloadError} = require("../exceptions/MissingParameterPayloadError");
+const {OK} = require("../utils/status_code.util");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Create payment intent and return `client_secret` back to the client
@@ -39,6 +41,51 @@ const createPaymentIntentHandler = async (req) => {
   return paymentIntent;
 }
 
+const refundHandler = async (req) => {
+  const {
+    payment_intent,
+    amount,
+    reason,
+  } = req.body;
+
+  if (!payment_intent) {
+    throw new MissingParameterPayloadError(`Missing parameter "payment_intent"`);
+  }
+
+  if (!amount) {
+    throw new MissingParameterPayloadError(`Missing parameter "amount"`);
+  }
+
+  if (!reason) {
+    throw new MissingParameterPayloadError(`Missing parameter "reason"`);
+  }
+
+  const reasons = ['requested_by_customer', 'duplicate', 'fraudulent'];
+  if (!reasons.includes(reason)) {
+    throw new Error(`Invalid reason: must be one of [${reasons}]`);
+  }
+
+  try {
+    const refund = await stripe.refunds.create({
+      payment_intent,
+      amount,
+      reason,
+    });
+
+    /**
+     * TODO
+     * Handle more business if needed.
+     */
+    return refund;
+
+  } catch (error) {
+    iLogger.error(`CREATE PAYMENT REFUND ERR: ${error.message}`);
+    throw new Error(`CREATE PAYMENT REFUND ERR: ${error.message}`);
+  }
+
+}
+
 module.exports = {
   createPaymentIntentHandler,
+  refundHandler,
 }
