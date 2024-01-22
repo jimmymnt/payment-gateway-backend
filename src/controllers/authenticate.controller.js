@@ -1,5 +1,5 @@
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {OK} = require("../utils/status_code.util");
+const {OK, INTERNAL_SERVER} = require("../utils/status_code.util");
 const {logoutHandler, refreshTokenHandler} = require("../services/user.authenticate.service");
 
 const login = async (req, res) => {
@@ -16,7 +16,7 @@ const login = async (req, res) => {
       refreshToken,
     });
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 
@@ -34,7 +34,7 @@ const refreshToken = async (req, res) => {
       refreshToken: token.refreshToken,
     });
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 
@@ -48,7 +48,7 @@ const updatePassword = (req, res) => {
 
     console.log(current_password, new_password, confirmation_password);
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 
@@ -64,7 +64,7 @@ const logout = async (req, res) => {
         });
     }
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 

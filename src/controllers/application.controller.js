@@ -1,4 +1,4 @@
-const {OK, NOT_FOUND} = require("../utils/status_code.util");
+const {OK, NOT_FOUND, INTERNAL_SERVER} = require("../utils/status_code.util");
 const crypto = require('crypto');
 const {OAuthClientsModel} = require("../models/oauth.model");
 
@@ -29,7 +29,7 @@ const getApplications = async (req, res) => {
         page: parseInt(page),
       })
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 
@@ -61,7 +61,7 @@ const createApplication = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 
@@ -87,7 +87,7 @@ const updateApplication = async (req, res) => {
         data: result,
       });
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 
@@ -108,7 +108,7 @@ const removeApplication = async (req, res) => {
         data: app,
       });
   } catch (error) {
-    res.status(error.code || 500).json(error instanceof Error ? {error: error.message} : error);
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
 }
 

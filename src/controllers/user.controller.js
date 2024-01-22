@@ -21,7 +21,6 @@ const updateInternalUser = async (req, res) => {
   const result = await findUserById(id);
 
   if (result instanceof Error) {
-    console.log(result);
     return res.status(result.code ?? INTERNAL_SERVER)
       .json({
         error: result.message ?? "Internal Server Error",

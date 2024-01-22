@@ -6,6 +6,7 @@ const {OAuthClientsModel} = require("../models/oauth.model");
 const {UserModel} = require("../models/user.model");
 const {OAuthClientNotFoundError} = require("../exceptions/OAuthClientNotFoundError");
 const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
+const {INTERNAL_SERVER, UNAUTHORIZED} = require("../utils/status_code.util");
 
 const server = new OAuth2Server({
   model: OAuth // See https://github.com/oauthjs/node-oauth2-server for specification
@@ -59,7 +60,7 @@ const authorize = async (req, res) => {
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
+      res.status(err.code || INTERNAL_SERVER).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
@@ -73,7 +74,7 @@ const token = (req, res) => {
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 500).json(err instanceof Error ? {error: err.message} : err);
+      res.status(err.code || INTERNAL_SERVER).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
@@ -88,7 +89,7 @@ const authenticate = (req, res, next) => {
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(err.code || 401).json(err instanceof Error ? {error: err.message} : err);
+      res.status(err.code || UNAUTHORIZED).json(err instanceof Error ? {error: err.message} : err);
     });
 };
 
