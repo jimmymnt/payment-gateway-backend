@@ -24,8 +24,11 @@
   - The refreshToken need to be removed as well [TODO.
 
 ### TODO
-- [ ] Implement blacklist tokens @jimmy @david
+- [ ] Implement blacklist tokens @jimmy
 - [ ] Implement Logger #log #winston @jimmy @david
+  - [ ] Debug
+  - [ ] Error
+  - [ ] Exception
 - [ ] Install ELK server #log @david
 - [ ] CRUD: User @jimmy
 - [ ] CRUD: Client @jimmy
@@ -34,6 +37,7 @@
 - [ ] Revoke user AT after the token has been refreshed @jimmy
 - [ ] Authorization Flow @jimmy
 - [ ] Rate limit for api call @jimmy
+- [ ] Encrypt Secret Key for OAuth2 Application @jimmy
 
 ### Completed features ✓
 - [x] Authorize of OAuth

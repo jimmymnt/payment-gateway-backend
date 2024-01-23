@@ -1,12 +1,6 @@
 const express = require('express');
 const {OK} = require("../utils/status_code.util");
 const {auth} = require("../middleware/auth.middleware");
-const {
-  getApplications,
-  createApplication,
-  updateApplication,
-  removeApplication
-} = require("../controllers/application.controller");
 const {login, refreshToken, updatePassword, logout} = require("../controllers/authenticate.controller");
 const {createInternalUser, updateInternalUser} = require("../controllers/user.controller");
 const router = express.Router();
@@ -23,14 +17,8 @@ router.post('/token/refresh', refreshToken);
 router.post('/logout', auth, logout);
 router.put('/users/password/update', auth, updatePassword);
 
-/// Application routes
-router.get('/apps', auth, getApplications);
-router.post('/apps', auth, createApplication);
-router.put('/apps/:id', auth, updateApplication);
-router.delete('/apps/:id', auth, removeApplication);
-
 /// Internal User routes
-router.post('/users', auth, createInternalUser);
+router.post('/users', createInternalUser);
 router.put('/users/:id', auth, updateInternalUser);
 
 router.get('/protected-test', auth, (req, res) => {
