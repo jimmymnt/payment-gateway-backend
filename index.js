@@ -7,7 +7,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const configs = require('./src/configs');
-const oauthRoutes = require('./src/routes/oauth.routes');
 const apiRoutes = require('./src/routes/api');
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
@@ -37,7 +36,6 @@ app.use((req, res, next) => {
 });
 
 /// Routes
-app.use('/oauth', oauthRoutes);
 app.use('/api/v1', apiRoutes);
 app.use('/api/v1', paymentRoutes);
 

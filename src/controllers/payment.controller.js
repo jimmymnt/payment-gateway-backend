@@ -27,7 +27,6 @@ const createPaymentIntent = async (req, res) => {
  * @returns {Promise<*>}
  */
 const webhooksHandler = async (req, res) => {
-  // This is your Stripe CLI webhook secret for testing your endpoint locally.
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   const sig = req.headers['stripe-signature'];
@@ -40,7 +39,7 @@ const webhooksHandler = async (req, res) => {
   }
 
   // Handle the event
-  iLogger.info(`Event: ${JSON.stringify(event)}`);
+  iLogger.info(`Event: ${event}`);
   console.log(`Unhandled event type ${event.type}`);
 
   // Return a 200 response to acknowledge receipt of the event
@@ -49,7 +48,6 @@ const webhooksHandler = async (req, res) => {
   });
 }
 
-// $21,861.35
 const createRefund = async (req, res) => {
   try {
     const result = await refundHandler(req);
