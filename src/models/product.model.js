@@ -20,6 +20,10 @@ const ProductSchema = new Schema({
     type: String,
     required: [true, "Main image field is required."],
   },
+  sku: {
+    type: String,
+    required: false,
+  },
   price: {
     type: Number,
     required: [true, "The price field is required."],

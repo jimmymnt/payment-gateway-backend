@@ -10,9 +10,11 @@ const getProducts = async (req, res) => {
     const limit = req.params.limit ? req.params.limit : 10;
     const page = req.params.page ? req.params.page : 1;
     const products = await Product.find({})
+      .select('-__v')
       .skip((page - 1) * limit)
       .limit(limit)
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .exec();
     const productTotal = await Product.countDocuments();
 
     res.status(OK).json({
@@ -21,6 +23,19 @@ const getProducts = async (req, res) => {
       limit,
       total: productTotal,
     });
+  } catch (error) {
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
+  }
+}
+
+const getProduct = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const product = await Product.findById(id)
+      .select('-__v')
+      .exec();
+
+    res.status(OK).json(product);
   } catch (error) {
     res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
   }
@@ -69,5 +84,6 @@ const createProducts = async (req, res) => {
 
 module.exports = {
   getProducts,
+  getProduct,
   createProducts,
 }
