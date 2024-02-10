@@ -1,4 +1,8 @@
 const {faker} = require('@faker-js/faker');
+const mongoose = require('mongoose');
+const configs = require("../../configs");
+const {Product} = require("../../models/product.model");
+const {PUBLISHED} = require("../../enum/Product.enum");
 
 const createRandomProduct = () => {
   return {
@@ -14,6 +18,7 @@ const createRandomProduct = () => {
       min: 20,
       max: 100,
     }),
+    status: PUBLISHED,
     sku: faker.commerce.isbn(13),
     images: [
       faker.image.urlLoremFlickr({category: 'abstract'}),
@@ -28,6 +33,18 @@ const createRandomProduct = () => {
   };
 }
 
-module.exports = {
-  createRandomProduct,
+function connect() {
+  mongoose.connection
+    .on('error', console.log)
+    .on('disconnected', console.log);
+  return mongoose.connect(configs.db);
 }
+
+connect().then(async res => {
+  for (let i = 0; i < 100; i++) {
+    const product = await Product.create(createRandomProduct());
+    console.log(`Created product ${product.title}`);
+  }
+  console.log('DONE');
+  await mongoose.disconnect();
+});

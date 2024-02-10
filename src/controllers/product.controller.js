@@ -4,6 +4,7 @@ const Resize = require("../services/Resize.service");
 const fs = require("fs");
 const {urlWithPath} = require("../utils/url.untils");
 const {uploadPath} = require("../utils/uploads.utils");
+const {PUBLISHED} = require("../enum/Product.enum");
 
 const getProducts = async (req, res) => {
   const limit = req.query.limit ? req.query.limit : 10;
@@ -11,10 +12,15 @@ const getProducts = async (req, res) => {
   const products = await Product.find({})
     .select('-__v')
     .sort('-createdAt')
+    .where({
+      status: PUBLISHED
+    })
     .skip((page - 1) * limit)
     .limit(limit)
     .exec();
-  const productTotal = await Product.countDocuments();
+  const productTotal = await Product.countDocuments({
+    status: PUBLISHED
+  });
 
   res.status(OK).json({
     products,

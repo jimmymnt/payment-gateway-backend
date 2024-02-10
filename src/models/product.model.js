@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
 const {ProductNotFoundError} = require("../exceptions/Product/ProductNotFoundError");
 const {INTERNAL_SERVER} = require("../utils/status_code.util");
+const {DRAFT, PUBLISHED, BANNED} = require("../enum/Product.enum");
 const {Schema} = mongoose;
 
 const ProductSchema = new Schema({
   title: {
     type: String,
     required: [true, "Product title field is required."],
+  },
+  status: {
+    type: String,
+    enum: [DRAFT, PUBLISHED, BANNED],
+    default: DRAFT,
   },
   shortDescription: {
     type: String,
