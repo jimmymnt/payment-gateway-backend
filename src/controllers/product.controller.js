@@ -2,6 +2,7 @@ const {OK, INTERNAL_SERVER} = require("../utils/status_code.util");
 const {Product} = require("../models/product.model");
 const Resize = require("../services/Resize.service");
 const fs = require("fs");
+const {urlWithPath} = require("../utils/url.untils");
 const {uploadPath} = require("../utils/uploads.utils");
 
 const getProducts = async (req, res) => {
@@ -12,9 +13,13 @@ const getProducts = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(limit)
       .sort('-createdAt');
+    const productTotal = await Product.countDocuments();
 
     res.status(OK).json({
       products,
+      page,
+      limit,
+      total: productTotal,
     });
   } catch (error) {
     res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
@@ -24,11 +29,12 @@ const getProducts = async (req, res) => {
 const createProducts = async (req, res) => {
   try {
     // folder upload
-    const imagePath = uploadPath();
+    const {absolutePath, relativePath} = uploadPath();
+    console.log(absolutePath, relativePath);
     const thumbnailFile = req.files['thumbnail'][0];
     const imagesFile = req.files['images'];
 
-    const fileUpload = new Resize(imagePath);
+    const fileUpload = new Resize(absolutePath);
     // Storage Thumbnail
     const thumbnailPath = await fileUpload.save(thumbnailFile, 768, 422);
     if (thumbnailPath) {
@@ -39,7 +45,7 @@ const createProducts = async (req, res) => {
     const productImages = [];
     for (const image of imagesFile) {
       const filename = await fileUpload.save(image, 768, 422);
-      const productImage = 'public/uploads/' + filename;
+      const productImage = urlWithPath(req, relativePath + filename);
       if (filename) {
         productImages.unshift(productImage);
         fs.unlinkSync(image.path);
@@ -48,7 +54,7 @@ const createProducts = async (req, res) => {
 
     const product = await Product.create({
       ...req.body,
-      thumbnail: 'public/uploads/' + thumbnailPath,
+      thumbnail: urlWithPath(req, relativePath + thumbnailPath),
       images: productImages,
     });
 

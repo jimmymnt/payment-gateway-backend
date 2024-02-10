@@ -10,12 +10,15 @@ const uploadPath = () => {
   const today = new Date();
   const currentYear = (today.getFullYear());
   const currentMonth = padTo2Digits(today.getMonth() + 1);
-  const uploadPathFolder = path.join(__dirname, `./../../public/uploads/${currentYear}/${currentMonth}`);
+  const uploadPathFolder = path.join(__dirname, `./../../public/uploads/${currentYear}/${currentMonth}/`);
   if (!fs.existsSync(uploadPathFolder)) {
     fs.mkdirSync(uploadPathFolder, {recursive: true});
   }
 
-  return uploadPathFolder;
+  return {
+    absolutePath: uploadPathFolder,
+    relativePath: `uploads/${currentYear}/${currentMonth}/`,
+  };
 }
 
 module.exports = {

@@ -13,7 +13,12 @@ const swaggerUi = require('swagger-ui-express');
 const paymentRoutes = require("./src/routes/payment.routes");
 const productRoutes = require("./src/routes/product.routes");
 const {webhooksHandler} = require("./src/controllers/payment.controller");
+const path = require("node:path");
 const app = express();
+
+// Static files
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(__dirname + '/static'));
 
 app.post('/stripe-webhooks', express.raw({type: 'application/json'}), webhooksHandler);
 
