@@ -1,5 +1,5 @@
-const {FORBIDDEN} = require("../utils/status_code.util");
-const BaseError = require("./BaseError");
+const {FORBIDDEN} = require("../../utils/status_code.util");
+const BaseError = require("../BaseError");
 
 class TokenInvalidError extends BaseError {
   constructor(

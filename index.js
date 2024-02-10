@@ -11,6 +11,7 @@ const apiRoutes = require('./src/routes/api');
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const paymentRoutes = require("./src/routes/payment.routes");
+const productRoutes = require("./src/routes/product.routes");
 const {webhooksHandler} = require("./src/controllers/payment.controller");
 const app = express();
 
@@ -38,6 +39,7 @@ app.use((req, res, next) => {
 /// Routes
 app.use('/api/v1', apiRoutes);
 app.use('/api/v1', paymentRoutes);
+app.use('/api/v1', productRoutes);
 
 /// Setup Server
 const port = process.env.PORT || 3000;

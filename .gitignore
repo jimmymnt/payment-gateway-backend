@@ -4,3 +4,5 @@
 test.yml
 /exception.log
 /rejections.log
+/public/uploads
+/var
