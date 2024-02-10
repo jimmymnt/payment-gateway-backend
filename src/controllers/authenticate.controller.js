@@ -1,70 +1,54 @@
 const {findUserByEmail, validatePassword} = require("../services/user.service");
-const {OK, INTERNAL_SERVER} = require("../utils/status_code.util");
+const {OK} = require("../utils/status_code.util");
 const {logoutHandler, refreshTokenHandler} = require("../services/user.authenticate.service");
 
 const login = async (req, res) => {
-  try {
-    const {email, password} = req.body;
-    /// Find user by email
-    const user = await findUserByEmail(email);
-    /// Validate the password from request with user's password
-    await validatePassword(password, user);
-    /// Sign and return back the access token
-    const {accessToken, refreshToken} = await user.generateAccessToken();
-    res.status(OK).json({
-      accessToken,
-      refreshToken,
-    });
-  } catch (error) {
-    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
-  }
+  const {email, password} = req.body;
+  /// Find user by email
+  const user = await findUserByEmail(email);
+  /// Validate the password from request with user's password
+  await validatePassword(password, user);
+  /// Sign and return back the access token
+  const {accessToken, refreshToken} = await user.generateAccessToken();
+  res.status(OK).json({
+    accessToken,
+    refreshToken,
+  });
 }
 
 const refreshToken = async (req, res) => {
-  try {
-    const {refresh_token} = req.body;
-    const token = await refreshTokenHandler(refresh_token);
+  const {refresh_token} = req.body;
+  const token = await refreshTokenHandler(refresh_token);
 
-    // await blacklistOldToken(refresh_token);
-    // res.send(OK);
+  // await blacklistOldToken(refresh_token);
+  // res.send(OK);
 
-    res.status(OK).json({
-      message: "New access token has been generated.",
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
-    });
-  } catch (error) {
-    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
-  }
+  res.status(OK).json({
+    message: "New access token has been generated.",
+    accessToken: token.accessToken,
+    refreshToken: token.refreshToken,
+  });
 }
 
 const updatePassword = (req, res) => {
-  try {
-    const {
-      current_password,
-      new_password,
-      confirmation_password
-    } = req.body;
+  const {
+    current_password,
+    new_password,
+    confirmation_password
+  } = req.body;
 
-    console.log(current_password, new_password, confirmation_password);
-  } catch (error) {
-    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
-  }
+  console.log(current_password, new_password, confirmation_password);
 }
 
 /// Logout the user from the system
 /// - Add the token into `blacklist` collection
 const logout = async (req, res) => {
-  try {
-    const result = await logoutHandler(req);
-    if (!! result) {
-      res.status(OK)
-        .json({
-          message: 'Logged out',
-        });
-    }
-  } catch (error) {
-    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
+  const result = await logoutHandler(req);
+  if (!!result) {
+    res.status(OK)
+      .json({
+        message: 'Logged out',
+      });
   }
 }
 

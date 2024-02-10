@@ -4,17 +4,13 @@ const {iLogger} = require("../utils/logger.util");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const createPaymentIntent = async (req, res) => {
-  try {
-    const result = await createPaymentIntentHandler(req);
-    if (!!result) {
-      return res.status(OK)
-        .json({
-          message: 'DONE',
-          client_secret: result.client_secret
-        });
-    }
-  } catch (error) {
-    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
+  const result = await createPaymentIntentHandler(req);
+  if (!!result) {
+    return res.status(OK)
+      .json({
+        message: 'DONE',
+        client_secret: result.client_secret
+      });
   }
 }
 
@@ -49,17 +45,13 @@ const webhooksHandler = async (req, res) => {
 }
 
 const createRefund = async (req, res) => {
-  try {
-    const result = await refundHandler(req);
-    if (!!result) {
-      return res.status(OK)
-        .json({
-          message: "Refunded",
-          data: result,
-        });
-    }
-  } catch (error) {
-    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
+  const result = await refundHandler(req);
+  if (!!result) {
+    return res.status(OK)
+      .json({
+        message: "Refunded",
+        data: result,
+      });
   }
 }
 
