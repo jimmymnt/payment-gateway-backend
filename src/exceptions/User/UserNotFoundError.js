@@ -1,5 +1,5 @@
-const {NOT_FOUND} = require("../utils/status_code.util");
-const BaseError = require("./BaseError");
+const {NOT_FOUND} = require("../../utils/status_code.util");
+const BaseError = require("../BaseError");
 
 class UserNotFoundError extends BaseError {
   constructor(

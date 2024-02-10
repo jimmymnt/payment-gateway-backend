@@ -1,4 +1,4 @@
-const {OK, INTERNAL_SERVER} = require("../utils/status_code.util");
+const {OK, INTERNAL_SERVER, BAD_REQUEST} = require("../utils/status_code.util");
 const {createPaymentIntentHandler, refundHandler} = require("../services/payment.service");
 const {iLogger} = require("../utils/logger.util");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -19,7 +19,7 @@ const createPaymentIntent = async (req, res) => {
 }
 
 /**
- * In here we can control and handle everything related to Event which has been sent by STRIPE.
+ * In here we can control and handle everything related to Event which has been sent to our system by STRIPE.
  * For more details, we can see all events via command `stripe help trigger` (required `stripe CLI` installed)
  * @author Jimmy
  * @param req
@@ -35,7 +35,7 @@ const webhooksHandler = async (req, res) => {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     iLogger.error(`Webhook Error: ${err.message}`);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return res.status(BAD_REQUEST).send(`Webhook Error: ${err.message}`);
   }
 
   // Handle the event

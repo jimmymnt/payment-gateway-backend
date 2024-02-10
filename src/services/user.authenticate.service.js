@@ -1,9 +1,9 @@
-const {RefreshTokenError} = require("../exceptions/RefreshTokenError");
+const {RefreshTokenError} = require("../exceptions/Token/RefreshTokenError");
 const {UserRefreshTokenModel} = require("../models/user_refresh_token.model");
 const jwt = require("jsonwebtoken");
-const {UserModel} = require("../models/user.model");
-const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
-const {TokenInvalidError} = require("../exceptions/TokenInvalidError");
+const {User} = require("../models/user.model");
+const {UserNotFoundError} = require("../exceptions/User/UserNotFoundError");
+const {TokenInvalidError} = require("../exceptions/Token/TokenInvalidError");
 const {iLogger} = require("../utils/logger.util");
 const {createBlacklistToken} = require("../models/access_token_blacklist.model");
 
@@ -19,7 +19,7 @@ const refreshTokenHandler = async (refreshToken) => {
   }
 
   const tokenDetails = jwt.verify(refreshToken, privateRefreshKey);
-  const user = await UserModel.findOne({id: tokenDetails.user_id});
+  const user = await User.findOne({id: tokenDetails.user_id});
 
   if (!user) {
     throw new UserNotFoundError("User not found.");

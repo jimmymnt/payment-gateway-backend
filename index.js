@@ -11,8 +11,14 @@ const apiRoutes = require('./src/routes/api');
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const paymentRoutes = require("./src/routes/payment.routes");
+const productRoutes = require("./src/routes/product.routes");
 const {webhooksHandler} = require("./src/controllers/payment.controller");
+const path = require("node:path");
 const app = express();
+
+// Static files
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(__dirname + '/static'));
 
 app.post('/stripe-webhooks', express.raw({type: 'application/json'}), webhooksHandler);
 
@@ -38,6 +44,7 @@ app.use((req, res, next) => {
 /// Routes
 app.use('/api/v1', apiRoutes);
 app.use('/api/v1', paymentRoutes);
+app.use('/api/v1', productRoutes);
 
 /// Setup Server
 const port = process.env.PORT || 3000;

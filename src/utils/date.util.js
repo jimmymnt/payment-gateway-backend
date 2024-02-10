@@ -13,5 +13,6 @@ function formatDate(date) {
 }
 
 module.exports = {
+  padTo2Digits,
   formatDate,
 }

@@ -1,11 +1,11 @@
-const {UserModel} = require("../models/user.model");
+const {User} = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const {UnprocessableEntityError} = require("../exceptions/UnprocessableEntityError");
-const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
+const {UserNotFoundError} = require("../exceptions/User/UserNotFoundError");
 const {v4: uuid} = require("uuid");
 
 const findUserByEmail = async (email) => {
-  const user = await UserModel.findOne({email});
+  const user = await User.findOne({email});
   if (!user) {
     throw new UserNotFoundError(`User with email (${email}) not found.`);
   }
@@ -30,7 +30,7 @@ const createUser = async (information) => {
 
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-  const user = await UserModel.create({
+  const user = await User.create({
     id: uuid(),
     name,
     email,

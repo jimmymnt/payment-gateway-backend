@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
 const {generateRefreshToken} = require("./user_refresh_token.model");
-const {UserNotFoundError} = require("../exceptions/UserNotFoundError");
+const {UserNotFoundError} = require("../exceptions/User/UserNotFoundError");
 const {INTERNAL_SERVER} = require("../utils/status_code.util");
 const {Schema} = mongoose;
 
-const User = new Schema({
+const UserSchema = new Schema({
   id: {
     type: String,
     required: true,
@@ -37,7 +37,7 @@ const User = new Schema({
   },
 });
 
-User.methods.generateAccessToken = async function () {
+UserSchema.methods.generateAccessToken = async function () {
   const accessToken = jwt.sign({
     user_id: this.id,
   }, process.env.JWT_SECRET_KEY, {
@@ -53,11 +53,11 @@ User.methods.generateAccessToken = async function () {
   };
 }
 
-const UserModel = mongoose.model("User", User, "users");
+const User = mongoose.model("User", UserSchema);
 
 const findUserById = async (id) => {
   try {
-    const user = await UserModel.findOne({
+    const user = await User.findOne({
       _id: id,
     }).select('-password -__v').exec();
 
@@ -82,6 +82,6 @@ async function validateEmail(email) {
 }
 
 module.exports = {
-  UserModel,
+  User,
   findUserById,
 }
