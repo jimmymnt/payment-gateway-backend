@@ -10,9 +10,11 @@ const getProducts = async (req, res) => {
     const limit = req.params.limit ? req.params.limit : 10;
     const page = req.params.page ? req.params.page : 1;
     const products = await Product.find({})
+      .select('-__v')
       .skip((page - 1) * limit)
       .limit(limit)
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .exec();
     const productTotal = await Product.countDocuments();
 
     res.status(OK).json({
