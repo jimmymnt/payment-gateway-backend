@@ -6,13 +6,13 @@ const {urlWithPath} = require("../utils/url.untils");
 const {uploadPath} = require("../utils/uploads.utils");
 
 const getProducts = async (req, res) => {
-  const limit = req.params.limit ? req.params.limit : 10;
-  const page = req.params.page ? req.params.page : 1;
+  const limit = req.query.limit ? req.query.limit : 10;
+  const page = req.query.page ? req.query.page : 1;
   const products = await Product.find({})
     .select('-__v')
+    .sort('-createdAt')
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort('-createdAt')
     .exec();
   const productTotal = await Product.countDocuments();
 
