@@ -28,6 +28,19 @@ const getProducts = async (req, res) => {
   }
 }
 
+const getProduct = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const product = await Product.findById(id)
+      .select('-__v')
+      .exec();
+
+    res.status(OK).json(product);
+  } catch (error) {
+    res.status(error.code || INTERNAL_SERVER).json(error instanceof Error ? {error: error.message} : error);
+  }
+}
+
 const createProducts = async (req, res) => {
   try {
     // folder upload
@@ -71,5 +84,6 @@ const createProducts = async (req, res) => {
 
 module.exports = {
   getProducts,
+  getProduct,
   createProducts,
 }
