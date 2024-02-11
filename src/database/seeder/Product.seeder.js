@@ -2,7 +2,7 @@ const {faker} = require('@faker-js/faker');
 const mongoose = require('mongoose');
 const configs = require("../../configs");
 const {Product} = require("../../models/product.model");
-const {PUBLISHED} = require("../../enum/Product.enum");
+const {PUBLISHED} = require("../../constants/Product.constant");
 
 const createRandomProduct = () => {
   return {
