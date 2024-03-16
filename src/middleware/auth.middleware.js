@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { FORBIDDEN, UNAUTHORIZED } = require("../utils/status_code.util");
-const { UserTokenBlackListModel } = require("../models/access_token_blacklist.model");
-const { iLogger } = require("../utils/logger.util");
+const {FORBIDDEN, UNAUTHORIZED} = require("../utils/status_code.util");
+const {UserTokenBlackListModel} = require("../models/access_token_blacklist.model");
+const {iLogger} = require("../utils/logger.util");
 
 const authMiddleware = async (req, res, next) => {
   iLogger.info(
@@ -27,7 +27,7 @@ const authMiddleware = async (req, res, next) => {
 
     /// Check that token is in Blacklist?
     /// TODO Make a request to check Blacklist Token from Redis instead of MongoDB
-    const existedBlacklist = await UserTokenBlackListModel.exists({ token: accessToken });
+    const existedBlacklist = await UserTokenBlackListModel.exists({token: accessToken});
     if (!!existedBlacklist) {
       iLogger.error('This token has been rejected by the system');
       return res.status(FORBIDDEN).json({
