@@ -56,19 +56,15 @@ UserSchema.methods.generateAccessToken = async function () {
 const User = mongoose.model("User", UserSchema);
 
 const findUserById = async (id) => {
-  try {
-    const user = await User.findOne({
-      _id: id,
-    }).select('-password -__v').exec();
+  const user = await User.findOne({
+    _id: id,
+  }).select('-password -__v').exec();
 
-    if (!user) {
-      return new UserNotFoundError(`Can not find user with ID is ${id}`);
-    }
-
-    return user;
-  } catch (error) {
-    return new UserNotFoundError(`Error: ${error.message}`, INTERNAL_SERVER);
+  if (!user) {
+    return new UserNotFoundError(`Can not find user with ID is ${id}`);
   }
+
+  return user;
 }
 
 async function validateEmail(email) {

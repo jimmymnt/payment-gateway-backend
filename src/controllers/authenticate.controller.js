@@ -24,7 +24,7 @@ const refreshToken = async (req, res) => {
   // res.send(OK);
 
   res.status(OK).json({
-    message: "New access token has been generated.",
+    message: "token_refreshed",
     accessToken: token.accessToken,
     refreshToken: token.refreshToken,
   });
@@ -47,7 +47,7 @@ const logout = async (req, res) => {
   if (!!result) {
     res.status(OK)
       .json({
-        message: 'Logged out',
+        message: 'authenticate.succeed',
       });
   }
 }

@@ -6,3 +6,4 @@ test.yml
 /rejections.log
 /public/uploads
 /var
+service_account_credentials.json
