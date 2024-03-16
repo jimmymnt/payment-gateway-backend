@@ -9,9 +9,8 @@ const upload = require("../middleware/upload.middleware");
 const {asyncHandler} = require("../utils/async_handler.utils");
 const router = express.Router();
 
-/// Product
+// Product
 router.get('/products', asyncHandler(getProducts));
-
 router.get('/products/:id', asyncHandler(getProduct));
 
 router.post('/products', upload.fields([

@@ -4,7 +4,7 @@ const Resize = require("../services/Resize.service");
 const fs = require("fs");
 const {urlWithPath} = require("../utils/url.untils");
 const {uploadPath} = require("../utils/uploads.utils");
-const {PUBLISHED} = require("../enum/Product.enum");
+const {PUBLISHED} = require("../constants/Product.constant");
 
 const getProducts = async (req, res) => {
   const limit = req.query.limit ? req.query.limit : 10;
@@ -32,7 +32,6 @@ const getProducts = async (req, res) => {
 
 const getProduct = async (req, res) => {
   const {id} = req.params;
-  console.log(id);
   const product = await Product.findById(id)
     .select('-__v')
     .exec();
@@ -72,7 +71,7 @@ const createProducts = async (req, res) => {
   });
 
   return res.status(OK).json({
-    message: "Product created",
+    message: 'product.created',
     product,
   });
 }
@@ -82,7 +81,7 @@ const deleteProduct = async (req, res) => {
   await Product.findByIdAndDelete(id);
 
   res.status(OK).json({
-    message: `Removed product ${id}`,
+    message: 'product.removed',
   });
 }
 

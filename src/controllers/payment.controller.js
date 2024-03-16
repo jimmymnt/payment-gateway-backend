@@ -31,7 +31,7 @@ const webhooksHandler = async (req, res) => {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     iLogger.error(`Webhook Error: ${err.message}`);
-    return res.status(BAD_REQUEST).send(`Webhook Error: ${err.message}`);
+    return res.status(BAD_REQUEST).send(`webhook_error: ${err.message}`);
   }
 
   // Handle the event
@@ -40,7 +40,7 @@ const webhooksHandler = async (req, res) => {
 
   // Return a 200 response to acknowledge receipt of the event
   res.status(OK).json({
-    message: "OK",
+    message: "ok",
   });
 }
 
@@ -49,7 +49,7 @@ const createRefund = async (req, res) => {
   if (!!result) {
     return res.status(OK)
       .json({
-        message: "Refunded",
+        message: "refunded",
         data: result,
       });
   }

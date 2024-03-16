@@ -12,6 +12,7 @@ const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const paymentRoutes = require("./src/routes/payment.routes");
 const productRoutes = require("./src/routes/product.routes");
+const googleSheetRoutes = require("./src/routes/ggsheet.routes");
 const {webhooksHandler} = require("./src/controllers/payment.controller");
 const path = require("node:path");
 const app = express();
@@ -45,6 +46,7 @@ app.use((req, res, next) => {
 app.use('/api/v1', apiRoutes);
 app.use('/api/v1', paymentRoutes);
 app.use('/api/v1', productRoutes);
+app.use('/api/v1', googleSheetRoutes);
 
 /// Setup Server
 const port = process.env.PORT || 3000;
